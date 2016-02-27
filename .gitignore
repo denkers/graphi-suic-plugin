@@ -6,4 +6,4 @@ nbactions.xml
 data/test
 *.swp
 lib/graphi.jar
-
+graphi-repo/
