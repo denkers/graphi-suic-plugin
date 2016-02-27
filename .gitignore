@@ -1,0 +1,9 @@
+target/
+src/com/graphi/test/
+nbactions.xml
+*.txt
+*.gml
+data/test
+*.swp
+lib/graphi.jar
+
