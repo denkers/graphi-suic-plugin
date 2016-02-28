@@ -8,5 +8,11 @@ package com.graphi.suicideintent;
 
 public class IntentComputation 
 {
-    
+    public static double getSelfEvaluation(int nodeIndex)
+    {
+        double evalRating   =   0.0;
+        
+        
+        return evalRating;
+    }
 }
