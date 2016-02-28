@@ -6,13 +6,27 @@
 
 package com.graphi.suicideintent;
 
+import cern.colt.matrix.impl.SparseDoubleMatrix2D;
+import com.graphi.suicideintent.util.SuicideGModelTransformer;
+import com.graphi.util.Edge;
+import com.graphi.util.MatrixTools;
+import com.graphi.util.Node;
+import edu.uci.ics.jung.graph.Graph;
+
 public class IntentComputation 
 {
-    public static double getSelfEvaluation(int nodeIndex)
+    public static SparseDoubleMatrix2D getSelfEvaluationVector(int nodeIndex, Graph<Node, Edge> g)
     {
-        double evalRating   =   0.0;
+        SuicideGModelTransformer transformer    =   new SuicideGModelTransformer(nodeIndex);
+        SparseDoubleMatrix2D matrix             =   transformer.transform(g);
+        SparseDoubleMatrix2D evalVector         =   MatrixTools.powerIterationFull(matrix);
         
-        
-        return evalRating;
+        return evalVector;
+    }
+    
+    public static double getSelfEvaluation(int nodeIndex, Graph<Node, Edge> g)
+    {
+        SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(nodeIndex, g);
+        return evalVector.get(nodeIndex, nodeIndex);
     }
 }
