@@ -7,7 +7,7 @@
 package com.graphi.suicideintent.util;
 
 import cern.colt.matrix.impl.SparseDoubleMatrix2D;
-import com.graphi.suicideintent.SuicideIntentConfig;
+import com.graphi.suicideintent.SuicideIntentPlugin;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
@@ -19,14 +19,11 @@ import org.apache.commons.collections15.Transformer;
 public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, SparseDoubleMatrix2D>
 {
     private final int perspectiveIndex;
-    private final SuicideIntentConfig config;
     
-    public SuicideGModelTransformer(int perspectiveIndex, SuicideIntentConfig config)
+    public SuicideGModelTransformer(int perspectiveIndex)
     {
         this.perspectiveIndex   =   perspectiveIndex;
-        this.config             =   config;
     }
-    
     
     @Override
     public SparseDoubleMatrix2D transform(Graph<Node, Edge> g)
@@ -41,7 +38,7 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
             for(int col = 0; col < n; col++)
             {
                 if(row == col && col == perspectiveIndex)
-                    matrix.set(perspectiveIndex, perspectiveIndex, config.getSelfWeight());
+                    matrix.set(perspectiveIndex, perspectiveIndex, SuicideIntentPlugin.CONFIG.getSelfWeight());
                 
                 else
                 {
@@ -50,9 +47,9 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
                     {
                         Edge edge   =   g.findEdge(current, next);
                         if(edge.getEdgeType() == EdgeType.UNDIRECTED)
-                            matrix.set(row, col, config.getDirectedWeight());
+                            matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDirectedWeight());
                         else
-                            matrix.set(row, col, config.getDirectedWeight());
+                            matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDirectedWeight());
                     }
                     
                     else matrix.set(row, col, 0);

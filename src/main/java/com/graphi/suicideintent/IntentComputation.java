@@ -17,7 +17,7 @@ public class IntentComputation
 {
     public static SparseDoubleMatrix2D getSelfEvaluationVector(int nodeIndex, Graph<Node, Edge> g)
     {
-        SuicideGModelTransformer transformer    =   new SuicideGModelTransformer(nodeIndex, SuicideIntentPlugin.CONFIG);
+        SuicideGModelTransformer transformer    =   new SuicideGModelTransformer(nodeIndex);
         SparseDoubleMatrix2D matrix             =   transformer.transform(g);
         SparseDoubleMatrix2D evalVector         =   MatrixTools.powerIterationFull(matrix);
         
