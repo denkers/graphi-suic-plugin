@@ -11,9 +11,12 @@ import com.graphi.plugins.AbstractPlugin;
 
 public class SuicideIntentPlugin extends AbstractPlugin
 {
+    public static SuicideIntentConfig CONFIG;
+    
     public SuicideIntentPlugin()
     {
         super("SuicideIntent", "Suicide intent plugin");
+        CONFIG  =   SuicideIntentConfig.getConfig();
     }
     
     @Override
