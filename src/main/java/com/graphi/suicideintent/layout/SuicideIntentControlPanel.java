@@ -6,13 +6,7 @@
 
 package com.graphi.suicideintent.layout;
 
-import com.graphi.app.AppManager;
-import com.graphi.display.layout.MainPanel;
-
-public class PluginLayout extends MainPanel
+public class SuicideIntentControlPanel 
 {
-    public PluginLayout(AppManager appManager) 
-    {
-        super(appManager);
-    }
+    
 }
