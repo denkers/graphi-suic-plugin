@@ -8,13 +8,10 @@ package com.graphi.suicideintent;
 
 import static com.graphi.app.ConfigManager.GLOBAL_CONF_FILE;
 import java.io.File;
-import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 
 public class SuicideIntentConfig 
@@ -54,7 +51,6 @@ public class SuicideIntentConfig
         catch(Exception e)
         {
             JOptionPane.showMessageDialog(null, "[Error] Failed to read " + CONFIG_FILE);
-            e.printStackTrace();
             return new SuicideIntentConfig();
         }
     }
