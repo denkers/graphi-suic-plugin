@@ -8,6 +8,7 @@ package com.graphi.suicideintent;
 
 import com.graphi.app.AppManager;
 import com.graphi.plugins.AbstractPlugin;
+import com.graphi.suicideintent.layout.PluginLayout;
 
 public class SuicideIntentPlugin extends AbstractPlugin
 {

@@ -1,0 +1,5 @@
+<SuicideIntentConfig>
+	<directedWeight>1</directedWeight>
+	<undirectedWeight>0.5</undirectedWeight>
+	<selfWeight>2</selfWeight>
+</SuicideIntentConfig>

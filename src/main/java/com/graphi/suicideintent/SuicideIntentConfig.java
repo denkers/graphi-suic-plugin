@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 public class SuicideIntentConfig 
 {
-    public static final String CONFIG_FILE  =   "SuicideIntentConfig.xml";
+    public static final String CONFIG_FILE  =   "data/config.xml";
     private double directedWeight;
     private double undirectedWeight;
     private double selfWeight;
@@ -40,7 +40,8 @@ public class SuicideIntentConfig
     {
         try
         {
-            File configFile             =   new File(GLOBAL_CONF_FILE);
+            final String DIRECTORY      =   new File(SuicideIntentConfig.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+            File configFile             =   new File(DIRECTORY + "/" + GLOBAL_CONF_FILE);
             DocumentBuilder docBuilder  =   DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document configDoc          =   docBuilder.parse(configFile);
             double undirectedW          =   Double.parseDouble(configDoc.getElementsByTagName("directedWeight").item(0).getTextContent());
@@ -53,6 +54,7 @@ public class SuicideIntentConfig
         catch(Exception e)
         {
             JOptionPane.showMessageDialog(null, "[Error] Failed to read " + CONFIG_FILE);
+            e.printStackTrace();
             return new SuicideIntentConfig();
         }
     }

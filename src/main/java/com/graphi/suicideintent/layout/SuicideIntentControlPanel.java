@@ -6,7 +6,13 @@
 
 package com.graphi.suicideintent.layout;
 
-public class SuicideIntentControlPanel 
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+
+public class SuicideIntentControlPanel extends JPanel
 {
-    
+    public SuicideIntentControlPanel()
+    {
+        setBorder(BorderFactory.createTitledBorder("Suicide intent controls"));
+    }
 }

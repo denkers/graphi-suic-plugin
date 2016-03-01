@@ -26,5 +26,14 @@
 			<url>file:${project.basedir}/graphi-repo</url>
 		</repository>
 	</repositories>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/data</directory>
+				<targetPath>${basedir}/target/data</targetPath>
+			</resource>
+		</resources>
+	</build>
 </project>
 
