@@ -8,6 +8,8 @@ package com.graphi.suicideintent.layout;
 
 import com.graphi.app.Consts;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -18,7 +20,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import net.miginfocom.swing.MigLayout;
 
-public class SuicideIntentControlPanel extends JPanel
+public class SuicideIntentControlPanel extends JPanel implements ActionListener
 {
     private JCheckBox displaySizeCheck, displayColourCheck;
     private JComboBox computeBox;
@@ -53,5 +55,30 @@ public class SuicideIntentControlPanel extends JPanel
         panelWrapper.add(computeButton);
         
         add(panelWrapper);
+        
+        resetButton.addActionListener(this);
+        computeButton.addActionListener(this);
+    }
+    
+    private void resetSuicideIntentDisplay()
+    {
+        
+    }
+    
+    public void computeSuicideIntent()
+    {
+        
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) 
+    {
+        Object src  =   e.getSource();
+        
+        if(src == resetButton)
+            resetSuicideIntentDisplay();
+        
+        else if(src == computeButton)
+            computeSuicideIntent();
     }
 }
