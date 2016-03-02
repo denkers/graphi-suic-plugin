@@ -16,7 +16,7 @@ public class PluginLayout extends MainPanel
     public PluginLayout(AppManager appManager) 
     {
         super(appManager);
-        suicideControlPanel =   new SuicideIntentControlPanel();
+        suicideControlPanel =   new SuicideIntentControlPanel(this);
         controlPanel.add(suicideControlPanel);
     }
 }
