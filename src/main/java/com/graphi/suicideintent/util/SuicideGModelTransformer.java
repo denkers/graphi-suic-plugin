@@ -37,12 +37,12 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
             Node current    =   vertices.get(row);
             for(int col = 0; col < n; col++)
             {
-                if(row == col && col == perspectiveIndex)
-                    matrix.set(perspectiveIndex, perspectiveIndex, SuicideIntentPlugin.CONFIG.getSelfWeight());
+                Node next   =   vertices.get(col);
+                if(next.getID() == perspectiveIndex)
+                    matrix.set(row, col, SuicideIntentPlugin.CONFIG.getSelfWeight());
                 
                 else
                 {
-                    Node next   =   vertices.get(col);
                     if(g.isNeighbor(current, next))
                     {
                         Edge edge   =   g.findEdge(current, next);
