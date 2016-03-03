@@ -126,10 +126,20 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                     nodeEvalScores.add(entry);
                 }
                 
+                int redIntensity    =   255;
+                int n               =   gData.getGraph().getVertexCount();
+                int reduceValue     =   n > redIntensity? 5 : redIntensity * (redIntensity / n);
+                
                 while(!nodeEvalScores.isEmpty())
                 {
                     Entry<Node, Double> entry   =   nodeEvalScores.poll();
                     outputNodeSelfEvaluation(entry.getKey(), entry.getValue());
+                    
+                    if(displayColour)
+                    {
+                        entry.getKey().setFill(new Color(redIntensity, 0, 0));
+                        redIntensity -= reduceValue;
+                    }
                 }
             }
         }
