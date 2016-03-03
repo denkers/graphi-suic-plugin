@@ -12,13 +12,12 @@ import com.graphi.util.ComponentUtils;
 import com.graphi.util.GraphData;
 import com.graphi.util.Node;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -80,6 +79,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
     {
         final String format =   "(SuicideIntentPlugin) Node ID = {0}, Self Evaluation = {1}";
         String msg          =   MessageFormat.format(format, node.getID(), selfEval);
+        ComponentUtils.sendToOutput(msg, parentPanel.getScreenPanel().getOutputPanel().getOutputArea());
     }
     
     public void computeSuicideIntent()
