@@ -16,8 +16,12 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.PriorityQueue;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -105,11 +109,27 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
             
             else
             {
-                List<Node> nodes        =   new ArrayList<>(gData.getGraph().getVertices());
+                List<Node> nodes                                    =   new ArrayList<>(gData.getGraph().getVertices());
+                PriorityQueue<Entry<Node, Double>> nodeEvalScores   =   new PriorityQueue<>(0, new Comparator<Entry<Node, Double>>()
+                {
+                    @Override
+                    public int compare(Entry<Node, Double> entryA, Entry<Node, Double> entryB)
+                    {
+                        return entryB.getValue().compareTo(entryA.getValue());
+                    }
+                });
+                
                 for(Node node : nodes)
                 {
-                    double eval =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
-                    outputNodeSelfEvaluation(node, eval);
+                    double eval                 =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
+                    Entry<Node, Double> entry   =   new SimpleEntry<>(node, eval); 
+                    nodeEvalScores.add(entry);
+                }
+                
+                while(!nodeEvalScores.isEmpty())
+                {
+                    Entry<Node, Double> entry   =   nodeEvalScores.poll();
+                    outputNodeSelfEvaluation(entry.getKey(), entry.getValue());
                 }
             }
         }
