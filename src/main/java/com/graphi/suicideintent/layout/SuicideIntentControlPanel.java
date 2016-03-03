@@ -74,7 +74,6 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
     
     private void resetSuicideIntentDisplay()
     {
-        
     }
     
     private void outputNodeSelfEvaluation(Node node, double selfEval)
