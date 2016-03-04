@@ -86,63 +86,16 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         ComponentUtils.sendToOutput(msg, parentPanel.getScreenPanel().getOutputPanel().getOutputArea());
     }
     
-    public void computeSuicideIntent()
+    public void displayEvalScores()
     {
-        int perspectiveIndex    =   (int) perspectiveSpinner.getValue();
-        GraphData gData         =   parentPanel.getGraphData();
+        int perspectiveIndex                =   (int) perspectiveSpinner.getValue();
+        GraphData gData                     =   parentPanel.getGraphData();
+        boolean computeAll                  =   computeBox.getSelectedIndex() == 0;
+        boolean displayColour               =   displayColourCheck.isSelected();
+        List<Entry<Node, Double>> scores    =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
         
-        if(gData.getNodes().containsKey(perspectiveIndex))
-            JOptionPane.showMessageDialog(null, "That node ID does not exist");
-        
-        else
-        {
-            boolean computeAll      =   computeBox.getSelectedIndex() == 0;
-            boolean displayColour   =   displayColourCheck.isSelected();
-            boolean displaySize     =   displaySizeCheck.isSelected();
-            
-            if(!computeAll)
-            {
-                double eval         =   IntentComputation.getSelfEvaluation(perspectiveIndex, gData.getGraph());
-                Node node           =   gData.getNodes().get(perspectiveIndex);
-                outputNodeSelfEvaluation(node, eval);
-            }
-            
-            else
-            {
-                List<Node> nodes                                    =   new ArrayList<>(gData.getGraph().getVertices());
-                PriorityQueue<Entry<Node, Double>> nodeEvalScores   =   new PriorityQueue<>(0, new Comparator<Entry<Node, Double>>()
-                {
-                    @Override
-                    public int compare(Entry<Node, Double> entryA, Entry<Node, Double> entryB)
-                    {
-                        return entryB.getValue().compareTo(entryA.getValue());
-                    }
-                });
-                
-                for(Node node : nodes)
-                {
-                    double eval                 =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
-                    Entry<Node, Double> entry   =   new SimpleEntry<>(node, eval); 
-                    nodeEvalScores.add(entry);
-                }
-                
-                int redIntensity    =   255;
-                int n               =   gData.getGraph().getVertexCount();
-                int reduceValue     =   n > redIntensity? 5 : redIntensity * (redIntensity / n);
-                
-                while(!nodeEvalScores.isEmpty())
-                {
-                    Entry<Node, Double> entry   =   nodeEvalScores.poll();
-                    outputNodeSelfEvaluation(entry.getKey(), entry.getValue());
-                    
-                    if(displayColour)
-                    {
-                        entry.getKey().setFill(new Color(redIntensity, 0, 0));
-                        redIntensity -= reduceValue;
-                    }
-                }
-            }
-        }
+        for(Entry<Node, Double> score : scores)
+            outputNodeSelfEvaluation(score.getKey(), score.getValue());
     }
 
     @Override
@@ -154,6 +107,6 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
             resetSuicideIntentDisplay();
         
         else if(src == computeButton)
-            computeSuicideIntent();
+            displayEvalScores();
     }
 }
