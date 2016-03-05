@@ -13,10 +13,10 @@ import com.graphi.util.GraphData;
 import com.graphi.util.MatrixTools;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
-import java.awt.Color;
 import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,9 +40,9 @@ public class IntentComputation
         return evalVector.get(nodeIndex, nodeIndex);
     }
     
-    public static List<Entry<Node, Double>> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)
+    public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)
     {
-        List<Entry<Node, Double>> nodeEvalScores    =   new ArrayList<>();
+        Map<Node, Double> nodeEvalScores    =   new HashMap<>();
         
         if(gData.getNodes().containsKey(perspectiveIndex))
             JOptionPane.showMessageDialog(null, "That node ID does not exist");
@@ -53,8 +53,7 @@ public class IntentComputation
             {
                 double eval                     =   IntentComputation.getSelfEvaluation(perspectiveIndex, gData.getGraph());
                 Node node                       =   gData.getNodes().get(perspectiveIndex);
-                Entry<Node, Double> entry       =   new SimpleEntry<>(node, eval); 
-                nodeEvalScores.add(entry);
+                nodeEvalScores.put(node, eval);
             }
             
             else
@@ -66,14 +65,13 @@ public class IntentComputation
                 for(Node node : nodes)
                 {
                     double eval                 =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
-                    Map.Entry<Node, Double> entry   =   new AbstractMap.SimpleEntry<>(node, eval); 
-                    nodeEvalScores.add(entry);
+                    nodeEvalScores.put(node, eval);
                 }
                 
                 while(!nodeEvalScores.isEmpty())
                 {
                     Entry<Node, Double> entry   =   nodeEvalQueue.poll();
-                    nodeEvalScores.add(entry);
+                    nodeEvalScores.put(entry.getKey(), entry.getValue());
                 }
             }
         }
