@@ -8,13 +8,14 @@ package com.graphi.suicideintent.util;
 
 import com.graphi.util.Node;
 import java.awt.Color;
+import java.awt.Paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections15.Transformer;
 
 
-public class EvalNodeColourTransformer implements Transformer<Node, Color>
+public class EvalNodeColourTransformer implements Transformer<Node, Paint>
 {
     private Map<Node, Double> scores;
     
@@ -24,7 +25,7 @@ public class EvalNodeColourTransformer implements Transformer<Node, Color>
     }
     
     @Override
-    public Color transform(Node i) 
+    public Paint transform(Node i) 
     {
         List<Node> nodes    =   new ArrayList<>(scores.keySet());
         int index           =   nodes.indexOf(i);

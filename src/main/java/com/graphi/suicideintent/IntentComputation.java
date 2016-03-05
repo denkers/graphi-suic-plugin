@@ -15,6 +15,7 @@ import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,7 +41,7 @@ public class IntentComputation
     
     public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)
     {
-        Map<Node, Double> nodeEvalScores    =   new HashMap<>();
+        Map<Node, Double> nodeEvalScores    =   new LinkedHashMap<>();
         
         if(gData.getNodes().containsKey(perspectiveIndex))
             JOptionPane.showMessageDialog(null, "That node ID does not exist");

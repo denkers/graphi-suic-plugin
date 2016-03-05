@@ -8,14 +8,19 @@ package com.graphi.suicideintent.layout;
 
 import com.graphi.app.Consts;
 import com.graphi.suicideintent.IntentComputation;
+import com.graphi.suicideintent.util.EvalNodeColourTransformer;
+import com.graphi.suicideintent.util.EvalNodeSizeTransformer;
 import com.graphi.util.ComponentUtils;
+import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
 import com.graphi.util.Node;
+import edu.uci.ics.jung.visualization.RenderContext;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
-import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -86,10 +91,22 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         GraphData gData                     =   parentPanel.getGraphData();
         boolean computeAll                  =   computeBox.getSelectedIndex() == 0;
         boolean displayColour               =   displayColourCheck.isSelected();
-        List<Entry<Node, Double>> scores    =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
+        boolean displaySize                 =   displaySizeCheck.isSelected();
+        Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
         
-        for(Entry<Node, Double> score : scores)
+        for(Entry<Node, Double> score : scores.entrySet())
             outputNodeSelfEvaluation(score.getKey(), score.getValue());
+        
+        if(displayColour || displaySize)
+        {
+            RenderContext<Node, Edge> context  =   parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().getRenderContext();
+            
+            if(displayColour)
+                context.setVertexFillPaintTransformer(new EvalNodeColourTransformer(scores));
+            
+            if(displaySize)
+                context.setVertexShapeTransformer(new EvalNodeSizeTransformer(scores));
+        }
     }
 
     @Override
