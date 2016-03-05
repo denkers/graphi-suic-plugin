@@ -13,8 +13,6 @@ import com.graphi.util.GraphData;
 import com.graphi.util.MatrixTools;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
-import java.util.AbstractMap;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
