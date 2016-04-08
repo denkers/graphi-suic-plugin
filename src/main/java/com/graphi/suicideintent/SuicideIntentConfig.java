@@ -6,7 +6,7 @@
 
 package com.graphi.suicideintent;
 
-import static com.graphi.app.ConfigManager.GLOBAL_CONF_FILE;
+import com.graphi.app.Consts;
 import java.io.File;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
@@ -38,7 +38,7 @@ public class SuicideIntentConfig
         try
         {
             final String DIRECTORY      =   new File(SuicideIntentConfig.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-            File configFile             =   new File(DIRECTORY + "/" + GLOBAL_CONF_FILE);
+            File configFile             =   new File(DIRECTORY + "/" + Consts.GLOBAL_CONF_FILE);
             DocumentBuilder docBuilder  =   DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document configDoc          =   docBuilder.parse(configFile);
             double undirectedW          =   Double.parseDouble(configDoc.getElementsByTagName("directedWeight").item(0).getTextContent());

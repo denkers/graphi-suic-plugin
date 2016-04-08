@@ -14,7 +14,6 @@ import com.graphi.util.MatrixTools;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
