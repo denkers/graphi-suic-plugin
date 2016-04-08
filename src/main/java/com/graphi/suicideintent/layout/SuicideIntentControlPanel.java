@@ -15,7 +15,6 @@ import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.visualization.RenderContext;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +28,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.SpinnerNumberModel;
 import net.miginfocom.swing.MigLayout;
 
@@ -39,6 +39,8 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
     private JSpinner perspectiveSpinner;
     private JButton resetButton, computeButton;
     private PluginLayout parentPanel;
+    private JPanel suicidePanel, simulationPanel;
+    private JTabbedPane controlsTabPane;
     
     public SuicideIntentControlPanel(PluginLayout parentPanel)
     {
@@ -52,6 +54,9 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         perspectiveSpinner  =   new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1));
         resetButton         =   new JButton("Reset");
         computeButton       =   new JButton("Compute");
+        suicidePanel        =   new JPanel(new BorderLayout());
+        simulationPanel     =   new JPanel(new BorderLayout());
+        controlsTabPane     =   new JTabbedPane();
         
         computeBox.addItem("All");
         computeBox.addItem("Selected");
@@ -68,7 +73,11 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         panelWrapper.add(resetButton, "al right");
         panelWrapper.add(computeButton);
         
-        add(panelWrapper);
+        suicidePanel.add(panelWrapper);
+        controlsTabPane.addTab("Computation", suicidePanel);
+        controlsTabPane.addTab("Simulation", simulationPanel);
+        
+        add(controlsTabPane);
         
         resetButton.addActionListener(this);
         computeButton.addActionListener(this);
