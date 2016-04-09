@@ -27,7 +27,7 @@ public class IntentComputation
     {
         SuicideGModelTransformer transformer    =   new SuicideGModelTransformer(nodeIndex);
         SparseDoubleMatrix2D matrix             =   transformer.transform(g);
-        SparseDoubleMatrix2D evalVector         =   MatrixTools.powerIterationFull(matrix);
+        SparseDoubleMatrix2D evalVector         =   MatrixTools.powerIteration(matrix);
         
         return evalVector;
     }
@@ -35,7 +35,7 @@ public class IntentComputation
     public static double getSelfEvaluation(int nodeIndex, Graph<Node, Edge> g)
     {
         SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(nodeIndex, g);
-        return evalVector.get(nodeIndex, nodeIndex);
+        return evalVector.get(0, nodeIndex);
     }
     
     public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)

@@ -11,7 +11,6 @@ public class SuicideSimulation
     {
         Random rGen         =   new Random();
         Object[] objs       =   (deleteNodes? graph.getVertices() : graph.getEdges()).toArray();
-       
         
         for(Object gObj : objs)
         {
