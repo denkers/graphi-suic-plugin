@@ -202,7 +202,9 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                 
                 executeButton.addActionListener(this);
             }
+            
 
+                
             @Override
             public void actionPerformed(ActionEvent e) 
             {

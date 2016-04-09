@@ -8,27 +8,21 @@ import java.util.Random;
 
 public class SuicideSimulation
 {
-    public static void deleteNodes(double p, Graph<Node, Edge> graph)
+    public static void deleteGraphObj(double p, Graph<Node, Edge> graph, boolean deleteNodes)
     {
-        Random rGen                 =   new Random();   
-        Collection<Node> nodes      =   graph.getVertices();
-        for(Node node : nodes)
+        Random rGen        =   new Random();
+        Collection objs    =   deleteNodes? graph.getVertices() : graph.getEdges();
+        
+        for(Object gObj : objs)
         {
             double prob =   rGen.nextDouble();
             if(prob <= p)
-                graph.removeVertex(node);
-        }
-    }
-    
-    public static void deleteEdges(double p, Graph<Node, Edge> graph)
-    {
-        Random rGen =   new Random();
-        Collection<Edge> edges      =   graph.getEdges();
-        for(Edge edge : edges)
-        {
-            double prob =   rGen.nextDouble();
-            if(prob <= p)
-                graph.removeEdge(edge);
+            {
+                if(deleteNodes)
+                    graph.removeVertex((Node) gObj);
+                else
+                    graph.removeEdge((Edge) gObj);
+            }
         }
     }
 }
