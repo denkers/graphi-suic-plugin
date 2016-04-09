@@ -210,6 +210,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                 boolean deleteNodes =   nodeDeleteRadio.isSelected();
                 
                 SuicideSimulation.deleteGraphObjs(p, parentPanel.getData().getGraph(), deleteNodes);
+                parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
             }
                 
             @Override
