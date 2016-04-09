@@ -178,7 +178,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         {
             private JRadioButton edgeDeleteRadio, nodeDeleteRadio;
             private ButtonGroup objDeleteGroup;
-            private JSpinner probField;
+            private JSpinner probField, fixedNField;
             private JButton executeButton;
             
             public DeleteRandomSimPanel()
@@ -187,6 +187,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                 edgeDeleteRadio =   new JRadioButton("Edges");
                 nodeDeleteRadio =   new JRadioButton("Nodes");
                 probField       =   new JSpinner(new SpinnerNumberModel(0.5, 0.0, 1.0, 0.1));
+                fixedNField     =   new JSpinner(new SpinnerNumberModel(10, 0, 1000, 1));
                 objDeleteGroup  =   new ButtonGroup();
                 executeButton   =   new JButton("Execute");
                     
@@ -199,6 +200,8 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                 add(edgeDeleteRadio, "wrap");
                 add(new JLabel("Probability"));
                 add(probField, "wrap");
+                add(new JLabel("Fixed N"));
+                add(fixedNField, "wrap");
                 add(executeButton, "al center, span 2");
                 
                 executeButton.addActionListener(this);
