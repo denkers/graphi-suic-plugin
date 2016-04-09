@@ -8,6 +8,7 @@ package com.graphi.suicideintent.layout;
 
 import com.graphi.app.Consts;
 import com.graphi.suicideintent.IntentComputation;
+import com.graphi.suicideintent.sim.SuicideSimulation;
 import com.graphi.suicideintent.util.EvalNodeColourTransformer;
 import com.graphi.suicideintent.util.EvalNodeSizeTransformer;
 import com.graphi.util.ComponentUtils;
@@ -203,12 +204,20 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                 executeButton.addActionListener(this);
             }
             
-
+            private void executeDelete()
+            {
+                double p            =   (Double) probField.getValue();
+                boolean deleteNodes =   nodeDeleteRadio.isSelected();
+                
+                SuicideSimulation.deleteGraphObjs(p, parentPanel.getData().getGraph(), deleteNodes);
+            }
                 
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                
+                Object src  =   e.getSource();
+                if(src == executeButton)
+                    executeDelete();
             }
         }
     }

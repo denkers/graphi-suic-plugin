@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class SuicideSimulation
 {
-    public static void deleteGraphObj(double p, Graph<Node, Edge> graph, boolean deleteNodes)
+    public static void deleteGraphObjs(double p, Graph<Node, Edge> graph, boolean deleteNodes)
     {
         Random rGen        =   new Random();
         Collection objs    =   deleteNodes? graph.getVertices() : graph.getEdges();
