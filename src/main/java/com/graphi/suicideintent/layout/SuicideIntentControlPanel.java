@@ -17,6 +17,7 @@ import com.graphi.util.Node;
 import edu.uci.ics.jung.visualization.RenderContext;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
@@ -139,15 +140,15 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
     {
         private final String RAND_DELETE_CARD   =   "Delete random";
         
-        private JPanel randomDeletePanel;
+        private DeleteRandomSimPanel randomDeletePanel;
         private JComboBox simTypeBox;
-        private DeleteRandomSimPanel simChangePanel;
+        private JPanel simChangePanel;
         
         public SuicideSimulationPanel()
         {
             setLayout(new MigLayout("fillx"));
-            simChangePanel      =   new DeleteRandomSimPanel();
-            randomDeletePanel   =   new JPanel(new MigLayout());
+            simChangePanel      =   new JPanel(new CardLayout());
+            randomDeletePanel   =   new DeleteRandomSimPanel();
             simTypeBox          =   new JComboBox();
             
             simChangePanel.add(randomDeletePanel, RAND_DELETE_CARD);
@@ -155,7 +156,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
             simTypeBox.addActionListener(this);
             
             add(simTypeBox, "wrap, al center");
-            add(simChangePanel);
+            add(simChangePanel, "al center");
         }
         
         private void changeSim(String name)
@@ -176,22 +177,27 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         {
             private JRadioButton edgeDeleteRadio, nodeDeleteRadio;
             private ButtonGroup objDeleteGroup;
+            private JSpinner probField;
             private JButton executeButton;
             
             public DeleteRandomSimPanel()
             {
-                setLayout(new MigLayout());
+                setLayout(new MigLayout("fillx"));
                 edgeDeleteRadio =   new JRadioButton("Edges");
                 nodeDeleteRadio =   new JRadioButton("Nodes");
+                probField       =   new JSpinner(new SpinnerNumberModel(0.5, 0.0, 1.0, 0.1));
                 objDeleteGroup  =   new ButtonGroup();
                 executeButton   =   new JButton("Execute");
                     
+                probField.setPreferredSize(new Dimension(50, 10));
                 objDeleteGroup.add(edgeDeleteRadio);
                 objDeleteGroup.add(nodeDeleteRadio);
                 nodeDeleteRadio.setSelected(true);
                 
-                add(nodeDeleteRadio);
+                add(nodeDeleteRadio, "al center");
                 add(edgeDeleteRadio, "wrap");
+                add(new JLabel("Probability"));
+                add(probField, "wrap");
                 add(executeButton, "al center, span 2");
                 
                 executeButton.addActionListener(this);
@@ -200,6 +206,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
             @Override
             public void actionPerformed(ActionEvent e) 
             {
+                
             }
         }
     }
