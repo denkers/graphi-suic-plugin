@@ -6,7 +6,6 @@
 
 package com.graphi.suicideintent.layout;
 
-import com.graphi.app.Consts;
 import com.graphi.suicideintent.IntentComputation;
 import com.graphi.suicideintent.SuicideIntentConfig;
 import com.graphi.suicideintent.SuicideIntentPlugin;
@@ -72,6 +71,7 @@ public class SuicideIntentControlPanel extends JPanel
         private JComboBox computeBox;
         private JSpinner perspectiveSpinner;
         private JButton resetButton, computeButton;
+        private JPanel computeSpecificPanel;
         
         public ComputePanel()
         {
@@ -84,19 +84,30 @@ public class SuicideIntentControlPanel extends JPanel
             computeButton       =   new JButton("Compute");
 
             computeBox.addItem("All");
-            computeBox.addItem("Selected");
+            computeBox.addItem("Specific");
+            
+            computeSpecificPanel =   new JPanel();
+            computeSpecificPanel.add(new JLabel("Perspective ID"));
+            computeSpecificPanel.add(perspectiveSpinner);
 
+            toggleSpecificPanel();
+            
             add(displaySizeCheck);
             add(displayColourCheck, "wrap");
             add(new JLabel("Target options"));
             add(computeBox, "wrap");
-            add(new JLabel("Perspective ID"));
-            add(perspectiveSpinner, "wrap");
+            add(computeSpecificPanel, "span 2, wrap");
             add(resetButton, "al right");
             add(computeButton);
 
             resetButton.addActionListener(this);
             computeButton.addActionListener(this);    
+            computeBox.addActionListener(this);
+        }
+        
+        private void toggleSpecificPanel()
+        {
+            computeSpecificPanel.setVisible(computeBox.getSelectedIndex() == 1);
         }
         
         private void resetSuicideIntentDisplay() {}
@@ -142,6 +153,9 @@ public class SuicideIntentControlPanel extends JPanel
 
             else if(src == computeButton)
                 displayEvalScores();
+            
+            else if(src == computeBox)
+                toggleSpecificPanel();
         }
     }
     

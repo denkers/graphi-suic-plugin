@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class IntentComputation 
 {
@@ -38,11 +39,29 @@ public class IntentComputation
         return evalVector.get(0, nodeIndex);
     }
     
+    public static DefaultTableModel getIntentTableModel(GraphData gData, int perspectiveIndex, boolean computeAll)
+    {
+        Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll);
+        DefaultTableModel model     =   new DefaultTableModel();
+        model.addColumn("Node ID");
+        model.addColumn("Suicide intent");
+        
+        for(Entry<Node, Double> scoreEntry : scores.entrySet())
+        {
+            int nodeID      =   scoreEntry.getKey().getID();
+            double score    =   scoreEntry.getValue();
+            
+            model.addRow(new Object[] { nodeID, score });
+        }
+        
+        return model;
+    }
+    
     public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)
     {
         Map<Node, Double> nodeEvalScores    =   new LinkedHashMap<>();
         
-        if(gData.getNodes().containsKey(perspectiveIndex))
+        if(!computeAll && gData.getNodes().containsKey(perspectiveIndex))
             JOptionPane.showMessageDialog(null, "That node ID does not exist");
         
         else
