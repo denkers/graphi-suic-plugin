@@ -10,7 +10,4 @@
 
 	<!-- Weight of awareness (someone killed/used to be there) -->
 	<deadWeight>0.1</deadWeight>
-
-	<!-- Default kill probability in delete simulations -->
-	<killProbability>0.5</killProbability>
 </SuicideIntentConfig>

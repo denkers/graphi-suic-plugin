@@ -20,6 +20,11 @@ public class SuicideIntentPlugin extends AbstractPlugin
         CONFIG  =   SuicideIntentConfig.getConfig();
     }
     
+    public static void reloadConfig()
+    {
+        CONFIG  =   SuicideIntentConfig.getConfig();
+    }
+    
     @Override
     public void attachPanel(AppManager appManager)
     {

@@ -8,6 +8,8 @@ package com.graphi.suicideintent.layout;
 
 import com.graphi.app.Consts;
 import com.graphi.suicideintent.IntentComputation;
+import com.graphi.suicideintent.SuicideIntentConfig;
+import com.graphi.suicideintent.SuicideIntentPlugin;
 import com.graphi.suicideintent.sim.SuicideSimulation;
 import com.graphi.suicideintent.util.EvalNodeColourTransformer;
 import com.graphi.suicideintent.util.EvalNodeSizeTransformer;
@@ -19,6 +21,7 @@ import edu.uci.ics.jung.visualization.RenderContext;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
@@ -46,6 +49,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
     private PluginLayout parentPanel;
     private JPanel suicidePanel;
     private SuicideSimulationPanel simPanel;
+    private SuicideConfigPanel configPanel;
     private JTabbedPane controlsTabPane;
     
     public SuicideIntentControlPanel(PluginLayout parentPanel)
@@ -62,6 +66,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         computeButton       =   new JButton("Compute");
         suicidePanel        =   new JPanel(new BorderLayout());
         simPanel            =   new SuicideSimulationPanel();
+        configPanel         =   new SuicideConfigPanel();
         controlsTabPane     =   new JTabbedPane();
         
         computeBox.addItem("All");
@@ -82,6 +87,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         suicidePanel.add(panelWrapper);
         controlsTabPane.addTab("Computation", suicidePanel);
         controlsTabPane.addTab("Simulation", simPanel);
+        controlsTabPane.addTab("Config", configPanel);
         
         add(controlsTabPane);
         
@@ -137,6 +143,69 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
             displayEvalScores();
     }
     
+    private class SuicideConfigPanel extends JPanel implements ActionListener
+    {
+        private JButton reloadConfigBtn;
+        private JLabel dirWeightLabel, undirWeightLabel, selfWeightLabel;
+        private JLabel deadWeightLabel;
+        
+        public SuicideConfigPanel()
+        {
+            setLayout(new MigLayout("fillx"));
+            reloadConfigBtn     =   new JButton("Reload config");
+            dirWeightLabel      =   new JLabel();
+            undirWeightLabel    =   new JLabel();
+            selfWeightLabel     =   new JLabel();
+            deadWeightLabel     =   new JLabel();
+
+            JLabel dirWeightTitle   =   new JLabel("Directed weight:");
+            JLabel undirWeightTitle =   new JLabel("Undirected weight:");
+            JLabel selfWeightTitle  =   new JLabel("Self weight:");
+            JLabel deadWeightTitle  =   new JLabel("Dead weight:");
+            Font titleFont          =   new Font("Arial", Font.BOLD, 12);
+            
+            dirWeightTitle.setFont(titleFont);
+            undirWeightTitle.setFont(titleFont);
+            selfWeightTitle.setFont(titleFont);
+            deadWeightTitle.setFont(titleFont);
+            
+            add(dirWeightTitle);
+            add(dirWeightLabel, "wrap");
+            add(undirWeightTitle);
+            add(undirWeightLabel, "wrap");
+            add(selfWeightTitle);
+            add(selfWeightLabel, "wrap");
+            add(deadWeightTitle);
+            add(deadWeightLabel, "wrap");
+            add(reloadConfigBtn, "al center, span 2");
+            
+            updateConfig();
+            reloadConfigBtn.addActionListener(this);
+        }
+        
+        private void updateConfig()
+        {
+            SuicideIntentConfig config  =   SuicideIntentPlugin.CONFIG;
+            dirWeightLabel.setText("" + config.getDirectedWeight());
+            undirWeightLabel.setText("" + config.getUndirectedWeight());
+            selfWeightLabel.setText("" + config.getSelfWeight());
+            deadWeightLabel.setText("" + config.getDeadWeight());
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) 
+        {
+            Object src  =   e.getSource();
+            
+            if(src == reloadConfigBtn)
+            {
+                SuicideIntentPlugin.reloadConfig();
+                updateConfig();
+            }
+        }
+        
+    }
+    
     private class SuicideSimulationPanel extends JPanel implements ActionListener
     {
         private final String RAND_DELETE_CARD   =   "Delete random";
@@ -178,7 +247,7 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         {
             private JRadioButton edgeDeleteRadio, nodeDeleteRadio;
             private ButtonGroup objDeleteGroup;
-            private JSpinner probField, fixedNField;
+            private JSpinner probField;
             private JButton executeButton;
             
             public DeleteRandomSimPanel()
@@ -187,7 +256,6 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                 edgeDeleteRadio =   new JRadioButton("Edges");
                 nodeDeleteRadio =   new JRadioButton("Nodes");
                 probField       =   new JSpinner(new SpinnerNumberModel(0.5, 0.0, 1.0, 0.1));
-                fixedNField     =   new JSpinner(new SpinnerNumberModel(10, 0, 1000, 1));
                 objDeleteGroup  =   new ButtonGroup();
                 executeButton   =   new JButton("Execute");
                     
@@ -200,8 +268,6 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
                 add(edgeDeleteRadio, "wrap");
                 add(new JLabel("Probability"));
                 add(probField, "wrap");
-                add(new JLabel("Fixed N"));
-                add(fixedNField, "wrap");
                 add(executeButton, "al center, span 2");
                 
                 executeButton.addActionListener(this);
