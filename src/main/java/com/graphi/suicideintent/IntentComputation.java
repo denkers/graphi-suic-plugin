@@ -7,6 +7,8 @@
 package com.graphi.suicideintent;
 
 import cern.colt.matrix.impl.SparseDoubleMatrix2D;
+import com.graphi.sim.GraphPlayback;
+import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.util.SuicideGModelTransformer;
 import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
@@ -39,9 +41,8 @@ public class IntentComputation
         return evalVector.get(0, nodeIndex);
     }
     
-    public static DefaultTableModel getIntentTableModel(GraphData gData, int perspectiveIndex, boolean computeAll)
+    public static DefaultTableModel getIntentTableModel(Map<Node, Double> scores)
     {
-        Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll);
         DefaultTableModel model     =   new DefaultTableModel();
         model.addColumn("Node ID");
         model.addColumn("Suicide intent");
@@ -55,6 +56,37 @@ public class IntentComputation
         }
         
         return model;
+    }
+    
+    public static DefaultTableModel getSuicideIntent(GraphData gData, int perspectiveIndex, boolean computeAll)
+    {
+        Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll);
+        return getIntentTableModel(scores);
+    }
+    
+    public static DefaultTableModel getAverageSuicideIntent(GraphPlayback playback, GraphData gData)
+    {
+        Map<Node, Double> scores        =   new LinkedHashMap<>();
+        List<PlaybackEntry> entries     =   playback.getEntries();
+        
+        if(!entries.get(0).hasComputationModel() || !entries.get(entries.size() - 1).hasComputationModel())
+            return null;
+        
+        DefaultTableModel timeFirst =   entries.get(0).getComputationModel().getModel();
+        DefaultTableModel timeLast  =   entries.get(entries.size() - 1).getComputationModel().getModel();
+        
+        int row = 0;
+        for(Node node : gData.getGraph().getVertices())
+        {
+            double scoreFirst       =   (double) timeFirst.getValueAt(row, 1);
+            double scoreLast        =   (double) timeLast.getValueAt(row, 1);
+            double averageScore     =   1.0 - (scoreLast / scoreFirst);
+            
+            scores.put(node, averageScore);
+            row++;
+        }
+        
+        return getIntentTableModel(scores);
     }
     
     public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)
@@ -75,20 +107,10 @@ public class IntentComputation
             
             else
             {
-                List<Node> nodes     =   new ArrayList<>(gData.getGraph().getVertices());
-                PriorityQueue<Map.Entry<Node, Double>> nodeEvalQueue   =   new PriorityQueue<>(0, (Map.Entry<Node, Double> entryA, Map.Entry<Node, Double> entryB) 
-                        -> entryB.getValue().compareTo(entryA.getValue()));
-                
-                for(Node node : nodes)
+                for(Node node : gData.getGraph().getVertices())
                 {
-                    double eval                 =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
+                    double eval     =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
                     nodeEvalScores.put(node, eval);
-                }
-                
-                while(!nodeEvalScores.isEmpty())
-                {
-                    Entry<Node, Double> entry   =   nodeEvalQueue.poll();
-                    nodeEvalScores.put(entry.getKey(), entry.getValue());
                 }
             }
         }

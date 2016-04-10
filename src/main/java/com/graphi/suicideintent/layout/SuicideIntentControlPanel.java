@@ -6,7 +6,10 @@
 
 package com.graphi.suicideintent.layout;
 
+import com.graphi.sim.GraphPlayback;
+import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.IntentComputation;
+import static com.graphi.suicideintent.IntentComputation.computeEvalScores;
 import com.graphi.suicideintent.SuicideIntentConfig;
 import com.graphi.suicideintent.SuicideIntentPlugin;
 import com.graphi.suicideintent.sim.SuicideSimulation;
@@ -32,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -129,17 +133,46 @@ public class SuicideIntentControlPanel extends JPanel
             computeBox.addActionListener(this);
         }
         
+        private void computeExecute()
+        {
+            if(computeBox.getSelectedIndex() == 2)
+                computeAverageSuicideIntent();
+            
+            else
+                computeSuicideIntent();
+        }
+        
         private void computeSuicideIntent()
         {
             boolean computeAll      =   computeBox.getSelectedIndex() == 0;
             int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
             GraphData gData         =   parentPanel.getGraphData();
             
-            DefaultTableModel model =   IntentComputation.getIntentTableModel(gData, perspectiveIndex, computeAll);
+            Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll);
+            DefaultTableModel model     =   IntentComputation.getIntentTableModel(scores);
             parentPanel.getScreenPanel().getDataPanel().setComputationModel(model);
             
             String contextMessage   =   "Suicide intent for " + (computeAll? "all" : "node '" + perspectiveIndex + "'");
             parentPanel.getScreenPanel().getDataPanel().setComputationContext(contextMessage);
+        }
+        
+        private void computeAverageSuicideIntent()
+        {
+            GraphData gData         =   parentPanel.getGraphData();
+            GraphPlayback playback  =   parentPanel.getScreenPanel().getGraphPanel().getGraphPlayback();
+            DefaultTableModel model =   IntentComputation.getAverageSuicideIntent(playback, gData);
+            
+            if(model != null)
+            {
+                PlaybackEntry entryFirst    =   playback.getEntries().get(0);
+                PlaybackEntry entryLast     =   playback.getEntries().get(playback.getSize() - 1);
+                
+                parentPanel.getScreenPanel().getDataPanel().setComputationModel(model);
+                parentPanel.getScreenPanel().getDataPanel().setComputationContext("Average suicide intent from entries: " + 
+                                                            entryFirst.getName() + " - " + entryLast.getName());
+            }
+            
+            else JOptionPane.showMessageDialog(null, "[Error] Invalid playback structure");
         }
         
         public void updateDataSetCount(int count)
@@ -213,7 +246,7 @@ public class SuicideIntentControlPanel extends JPanel
                 changeComputePanel();
             
             else if(src == computeButton)
-                computeSuicideIntent();
+                computeExecute();
         }
     }
     
