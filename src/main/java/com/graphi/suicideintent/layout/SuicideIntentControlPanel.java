@@ -40,16 +40,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.SpinnerNumberModel;
 import net.miginfocom.swing.MigLayout;
 
-public class SuicideIntentControlPanel extends JPanel implements ActionListener
+public class SuicideIntentControlPanel extends JPanel
 {
-    private JCheckBox displaySizeCheck, displayColourCheck;
-    private JComboBox computeBox;
-    private JSpinner perspectiveSpinner;
-    private JButton resetButton, computeButton;
     private PluginLayout parentPanel;
-    private JPanel suicidePanel;
     private SuicideSimulationPanel simPanel;
     private SuicideConfigPanel configPanel;
+    private ComputePanel computePanel;
     private JTabbedPane controlsTabPane;
     
     public SuicideIntentControlPanel(PluginLayout parentPanel)
@@ -58,89 +54,95 @@ public class SuicideIntentControlPanel extends JPanel implements ActionListener
         setBorder(BorderFactory.createTitledBorder("Suicide intent controls"));
         
         this.parentPanel    =   parentPanel;
-        displaySizeCheck    =   new JCheckBox("Display size");
-        displayColourCheck  =   new JCheckBox("Display colour");
-        computeBox          =   new JComboBox();
-        perspectiveSpinner  =   new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1));
-        resetButton         =   new JButton("Reset");
-        computeButton       =   new JButton("Compute");
-        suicidePanel        =   new JPanel(new BorderLayout());
+        computePanel        =   new ComputePanel();
         simPanel            =   new SuicideSimulationPanel();
         configPanel         =   new SuicideConfigPanel();
         controlsTabPane     =   new JTabbedPane();
         
-        computeBox.addItem("All");
-        computeBox.addItem("Selected");
-        
-        JPanel panelWrapper =   new JPanel(new MigLayout("fillx"));
-        panelWrapper.setBackground(Consts.PRESET_COL);
-        
-        panelWrapper.add(displaySizeCheck);
-        panelWrapper.add(displayColourCheck, "wrap");
-        panelWrapper.add(new JLabel("Target options"));
-        panelWrapper.add(computeBox, "wrap");
-        panelWrapper.add(new JLabel("Perspective ID"));
-        panelWrapper.add(perspectiveSpinner, "wrap");
-        panelWrapper.add(resetButton, "al right");
-        panelWrapper.add(computeButton);
-        
-        suicidePanel.add(panelWrapper);
-        controlsTabPane.addTab("Computation", suicidePanel);
+        controlsTabPane.addTab("Computation", computePanel);
         controlsTabPane.addTab("Simulation", simPanel);
         controlsTabPane.addTab("Config", configPanel);
         
         add(controlsTabPane);
-        
-        resetButton.addActionListener(this);
-        computeButton.addActionListener(this);
     }
     
-    private void resetSuicideIntentDisplay()
+    private class ComputePanel extends JPanel implements ActionListener
     {
-    }
-    
-    private void outputNodeSelfEvaluation(Node node, double selfEval)
-    {
-        final String format =   "(SuicideIntentPlugin) Node ID = {0}, Self Evaluation = {1}";
-        String msg          =   MessageFormat.format(format, node.getID(), selfEval);
-        ComponentUtils.sendToOutput(msg, parentPanel.getScreenPanel().getOutputPanel().getOutputArea());
-    }
-    
-    public void displayEvalScores()
-    {
-        int perspectiveIndex                =   (int) perspectiveSpinner.getValue();
-        GraphData gData                     =   parentPanel.getGraphData();
-        boolean computeAll                  =   computeBox.getSelectedIndex() == 0;
-        boolean displayColour               =   displayColourCheck.isSelected();
-        boolean displaySize                 =   displaySizeCheck.isSelected();
-        Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
+        private JCheckBox displaySizeCheck, displayColourCheck;
+        private JComboBox computeBox;
+        private JSpinner perspectiveSpinner;
+        private JButton resetButton, computeButton;
         
-        for(Entry<Node, Double> score : scores.entrySet())
-            outputNodeSelfEvaluation(score.getKey(), score.getValue());
-        
-        if(displayColour || displaySize)
+        public ComputePanel()
         {
-            RenderContext<Node, Edge> context  =   parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().getRenderContext();
-            
-            if(displayColour)
-                context.setVertexFillPaintTransformer(new EvalNodeColourTransformer(scores));
-            
-            if(displaySize)
-                context.setVertexShapeTransformer(new EvalNodeSizeTransformer(scores));
-        }
-    }
-    
+            setLayout(new MigLayout("fillx"));
+            displaySizeCheck    =   new JCheckBox("Display size");
+            displayColourCheck  =   new JCheckBox("Display colour");
+            computeBox          =   new JComboBox();
+            perspectiveSpinner  =   new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1));
+            resetButton         =   new JButton("Reset");
+            computeButton       =   new JButton("Compute");
 
-    @Override
-    public void actionPerformed(ActionEvent e) 
-    {
-        Object src  =   e.getSource();
+            computeBox.addItem("All");
+            computeBox.addItem("Selected");
+
+            add(displaySizeCheck);
+            add(displayColourCheck, "wrap");
+            add(new JLabel("Target options"));
+            add(computeBox, "wrap");
+            add(new JLabel("Perspective ID"));
+            add(perspectiveSpinner, "wrap");
+            add(resetButton, "al right");
+            add(computeButton);
+
+            resetButton.addActionListener(this);
+            computeButton.addActionListener(this);    
+        }
         
-        if(src == resetButton)
-            resetSuicideIntentDisplay();
+        private void resetSuicideIntentDisplay() {}
+
+        private void outputNodeSelfEvaluation(Node node, double selfEval)
+        {
+            final String format =   "(SuicideIntentPlugin) Node ID = {0}, Self Evaluation = {1}";
+            String msg          =   MessageFormat.format(format, node.getID(), selfEval);
+            ComponentUtils.sendToOutput(msg, parentPanel.getScreenPanel().getOutputPanel().getOutputArea());
+        }
         
-        else if(src == computeButton)
-            displayEvalScores();
+        public void displayEvalScores()
+        {
+            int perspectiveIndex                =   (int) perspectiveSpinner.getValue();
+            GraphData gData                     =   parentPanel.getGraphData();
+            boolean computeAll                  =   computeBox.getSelectedIndex() == 0;
+            boolean displayColour               =   displayColourCheck.isSelected();
+            boolean displaySize                 =   displaySizeCheck.isSelected();
+            Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
+
+            for(Entry<Node, Double> score : scores.entrySet())
+                outputNodeSelfEvaluation(score.getKey(), score.getValue());
+
+            if(displayColour || displaySize)
+            {
+                RenderContext<Node, Edge> context  =   parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().getRenderContext();
+
+                if(displayColour)
+                    context.setVertexFillPaintTransformer(new EvalNodeColourTransformer(scores));
+
+                if(displaySize)
+                    context.setVertexShapeTransformer(new EvalNodeSizeTransformer(scores));
+            }
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) 
+        {
+            Object src  =   e.getSource();
+
+            if(src == resetButton)
+                resetSuicideIntentDisplay();
+
+            else if(src == computeButton)
+                displayEvalScores();
+        }
     }
     
     private class SuicideConfigPanel extends JPanel implements ActionListener
