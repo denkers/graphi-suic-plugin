@@ -37,6 +37,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 
 public class SuicideIntentControlPanel extends JPanel
@@ -105,17 +106,30 @@ public class SuicideIntentControlPanel extends JPanel
             computeBox.addActionListener(this);
         }
         
+        private void computeSuicideIntent()
+        {
+            boolean computeAll      =   computeBox.getSelectedIndex() == 0;
+            int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
+            GraphData gData         =   parentPanel.getGraphData();
+            
+            DefaultTableModel model =   IntentComputation.getIntentTableModel(gData, perspectiveIndex, computeAll);
+            parentPanel.getScreenPanel().getDataPanel().setComputationModel(model);
+            
+            String contextMessage   =   "Suicide intent for " + (computeAll? "all" : "node '" + perspectiveIndex + "'");
+            parentPanel.getScreenPanel().getDataPanel().setComputationContext(contextMessage);
+        }
+        
         private void toggleSpecificPanel()
         {
             computeSpecificPanel.setVisible(computeBox.getSelectedIndex() == 1);
         }
         
         private void resetSuicideIntentDisplay() {}
-
-        private void outputNodeSelfEvaluation(Node node, double selfEval)
+        
+        private void outputNodeSelfEvaluation(int nodeID, double selfEval)
         {
             final String format =   "(SuicideIntentPlugin) Node ID = {0}, Self Evaluation = {1}";
-            String msg          =   MessageFormat.format(format, node.getID(), selfEval);
+            String msg          =   MessageFormat.format(format, nodeID, selfEval);
             ComponentUtils.sendToOutput(msg, parentPanel.getScreenPanel().getOutputPanel().getOutputArea());
         }
         
@@ -129,7 +143,7 @@ public class SuicideIntentControlPanel extends JPanel
             Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
 
             for(Entry<Node, Double> score : scores.entrySet())
-                outputNodeSelfEvaluation(score.getKey(), score.getValue());
+                outputNodeSelfEvaluation(score.getKey().getID(), score.getValue());
 
             if(displayColour || displaySize)
             {
@@ -156,6 +170,9 @@ public class SuicideIntentControlPanel extends JPanel
             
             else if(src == computeBox)
                 toggleSpecificPanel();
+            
+            else if(src == computeButton)
+                computeSuicideIntent();
         }
     }
     
