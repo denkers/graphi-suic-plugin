@@ -20,17 +20,21 @@ public class SuicideIntentConfig
     private double directedWeight;
     private double undirectedWeight;
     private double selfWeight;
+    private double deadWeight;
+    private double killProb;
 
     public SuicideIntentConfig()
     {
-        this(1.0, 0.5, 2.0);
+        this(1.0, 0.5, 2.0, 0.1, 0.5);
     }
     
-    public SuicideIntentConfig(double directedWeight, double undirectedWeight, double selfWeight)
+    public SuicideIntentConfig(double directedWeight, double undirectedWeight, double selfWeight, double deadWeight, double killProb)
     {
         this.directedWeight     =   directedWeight;
         this.undirectedWeight   =   undirectedWeight;
         this.selfWeight         =   selfWeight;
+        this.deadWeight         =   deadWeight;
+        this.killProb           =   killProb;
     }
     
     public static SuicideIntentConfig getConfig()
@@ -44,8 +48,10 @@ public class SuicideIntentConfig
             double undirectedW          =   Double.parseDouble(configDoc.getElementsByTagName("directedWeight").item(0).getTextContent());
             double directedW            =   Double.parseDouble(configDoc.getElementsByTagName("undirectedWeight").item(0).getTextContent());
             double selfW                =   Double.parseDouble(configDoc.getElementsByTagName("selfWeight").item(0).getTextContent());
+            double deadWeight           =   Double.parseDouble(configDoc.getElementsByTagName("deadWeight").item(0).getTextContent());
+            double killProb             =   Double.parseDouble(configDoc.getElementsByTagName("killProbability").item(0).getTextContent());
             
-            return new SuicideIntentConfig(directedW, undirectedW, selfW);
+            return new SuicideIntentConfig(directedW, undirectedW, selfW, deadWeight, killProb);
         }
         
         catch(Exception e)
@@ -68,5 +74,15 @@ public class SuicideIntentConfig
     public double getSelfWeight() 
     {
         return selfWeight;
+    }
+
+    public double getDeadWeight()
+    {
+        return deadWeight;
+    }
+
+    public double getKillProb() 
+    {
+        return killProb;
     }
 }
