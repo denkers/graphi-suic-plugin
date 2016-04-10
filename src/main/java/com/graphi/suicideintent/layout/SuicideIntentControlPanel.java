@@ -68,11 +68,18 @@ public class SuicideIntentControlPanel extends JPanel
     
     private class ComputePanel extends JPanel implements ActionListener
     {
+        private final String COMPUTE_SPECIFIC_CARD  =   "com_specific";
+        private final String COMPUTE_AVERAGE_CARD   =   "com_average";
+        private final String COMPUTE_ALL_CARD       =   "com_all";
+        
         private JCheckBox displaySizeCheck, displayColourCheck;
         private JComboBox computeBox;
         private JSpinner perspectiveSpinner;
         private JButton resetButton, computeButton;
         private JPanel computeSpecificPanel;
+        private JLabel dataSetsLabel;
+        private JPanel averageIntentPanel;
+        private JPanel computeSwitchPanel;
         
         public ComputePanel()
         {
@@ -83,21 +90,37 @@ public class SuicideIntentControlPanel extends JPanel
             perspectiveSpinner  =   new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1));
             resetButton         =   new JButton("Reset");
             computeButton       =   new JButton("Compute");
+            averageIntentPanel  =   new JPanel();
+            dataSetsLabel       =   new JLabel();
+            computeSwitchPanel  =   new JPanel(new CardLayout());
+            
 
             computeBox.addItem("All");
             computeBox.addItem("Specific");
+            computeBox.addItem("Average");
+            
+            Font titleFont          =   new Font("Arial", Font.BOLD, 12);
+            JLabel perspectiveTitle =   new JLabel("PerspectiveID");
+            JLabel dataCountTitle   =   new JLabel("No. data sets found: ");
+            perspectiveTitle.setFont(titleFont);
+            dataCountTitle.setFont(titleFont);
             
             computeSpecificPanel =   new JPanel();
             computeSpecificPanel.add(new JLabel("Perspective ID"));
             computeSpecificPanel.add(perspectiveSpinner);
+            
+            averageIntentPanel.add(dataCountTitle);
+            averageIntentPanel.add(dataSetsLabel);
 
-            toggleSpecificPanel();
+            computeSwitchPanel.add(new JPanel(), COMPUTE_ALL_CARD);
+            computeSwitchPanel.add(computeSpecificPanel, COMPUTE_SPECIFIC_CARD);
+            computeSwitchPanel.add(averageIntentPanel, COMPUTE_AVERAGE_CARD);
             
             add(displaySizeCheck);
             add(displayColourCheck, "wrap");
             add(new JLabel("Target options"));
             add(computeBox, "wrap");
-            add(computeSpecificPanel, "span 2, wrap");
+            add(computeSwitchPanel, "span 2, wrap");
             add(resetButton, "al right");
             add(computeButton);
 
@@ -119,10 +142,28 @@ public class SuicideIntentControlPanel extends JPanel
             parentPanel.getScreenPanel().getDataPanel().setComputationContext(contextMessage);
         }
         
-        private void toggleSpecificPanel()
+        public void updateDataSetCount(int count)
         {
-            computeSpecificPanel.setVisible(computeBox.getSelectedIndex() == 1);
         }
+        
+        private void changeComputePanel()
+        {
+            int selectedOption  =   computeBox.getSelectedIndex();
+            String cardName     =   "";
+            
+            switch(selectedOption)
+            {
+                case 0: cardName    =   COMPUTE_ALL_CARD; break;
+                case 1: cardName    =   COMPUTE_SPECIFIC_CARD; break;
+                case 2: cardName    =   COMPUTE_AVERAGE_CARD; break;
+                default: return;
+            }
+            
+            CardLayout cLayout  =   (CardLayout) computeSwitchPanel.getLayout();
+            cLayout.show(computeSwitchPanel, cardName);
+        }
+        
+        
         
         private void resetSuicideIntentDisplay() {}
         
@@ -169,7 +210,7 @@ public class SuicideIntentControlPanel extends JPanel
                 displayEvalScores();
             
             else if(src == computeBox)
-                toggleSpecificPanel();
+                changeComputePanel();
             
             else if(src == computeButton)
                 computeSuicideIntent();
