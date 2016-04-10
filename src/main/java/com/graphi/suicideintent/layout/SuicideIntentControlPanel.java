@@ -27,6 +27,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.swing.BorderFactory;
@@ -51,6 +53,8 @@ public class SuicideIntentControlPanel extends JPanel
     private SuicideConfigPanel configPanel;
     private ComputePanel computePanel;
     private JTabbedPane controlsTabPane;
+    private List<Node> deadNodes;
+    private List<Edge> deadEdges;
     
     public SuicideIntentControlPanel(PluginLayout parentPanel)
     {
@@ -62,6 +66,8 @@ public class SuicideIntentControlPanel extends JPanel
         simPanel            =   new SuicideSimulationPanel();
         configPanel         =   new SuicideConfigPanel();
         controlsTabPane     =   new JTabbedPane();
+        deadNodes           =   new ArrayList<>();
+        deadEdges           =   new ArrayList<>();
         
         controlsTabPane.addTab("Computation", computePanel);
         controlsTabPane.addTab("Simulation", simPanel);
