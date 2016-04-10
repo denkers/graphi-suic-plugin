@@ -15,6 +15,7 @@ import com.graphi.suicideintent.SuicideIntentPlugin;
 import com.graphi.suicideintent.sim.SuicideSimulation;
 import com.graphi.suicideintent.util.EvalNodeColourTransformer;
 import com.graphi.suicideintent.util.EvalNodeSizeTransformer;
+import com.graphi.suicideintent.util.SuicideFillTransformer;
 import com.graphi.util.ComponentUtils;
 import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
@@ -137,6 +138,10 @@ public class SuicideIntentControlPanel extends JPanel
             resetButton.addActionListener(this);
             computeButton.addActionListener(this);    
             computeBox.addActionListener(this);
+            
+            RenderContext<Node, Edge> rc  =   parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().getRenderContext();
+            rc.setVertexFillPaintTransformer(new SuicideFillTransformer<>(rc.getPickedVertexState(), deadNodes));
+            rc.setEdgeFillPaintTransformer(new SuicideFillTransformer<>(rc.getPickedEdgeState(), deadEdges));
         }
         
         private void computeExecute()
@@ -391,7 +396,7 @@ public class SuicideIntentControlPanel extends JPanel
                 double p            =   (Double) probField.getValue();
                 boolean deleteNodes =   nodeDeleteRadio.isSelected();
                 
-                SuicideSimulation.deleteGraphObjs(p, parentPanel.getData().getGraph(), deleteNodes);
+                SuicideSimulation.killGraphObjects(parentPanel.getGraphData().getGraph(), p, deleteNodes, deadNodes, deadEdges);
                 parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
             }
                 
