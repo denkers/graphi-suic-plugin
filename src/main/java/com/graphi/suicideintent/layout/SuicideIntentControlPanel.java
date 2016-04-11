@@ -365,7 +365,7 @@ public class SuicideIntentControlPanel extends JPanel
             private JRadioButton edgeDeleteRadio, nodeDeleteRadio;
             private ButtonGroup objDeleteGroup;
             private JSpinner probField;
-            private JButton executeButton;
+            private JButton executeButton, clearButton;
             
             public DeleteRandomSimPanel()
             {
@@ -375,6 +375,7 @@ public class SuicideIntentControlPanel extends JPanel
                 probField       =   new JSpinner(new SpinnerNumberModel(0.5, 0.0, 1.0, 0.1));
                 objDeleteGroup  =   new ButtonGroup();
                 executeButton   =   new JButton("Execute");
+                clearButton     =   new JButton("Clear");
                     
                 probField.setPreferredSize(new Dimension(50, 10));
                 objDeleteGroup.add(edgeDeleteRadio);
@@ -385,9 +386,18 @@ public class SuicideIntentControlPanel extends JPanel
                 add(edgeDeleteRadio, "wrap");
                 add(new JLabel("Probability"));
                 add(probField, "wrap");
-                add(executeButton, "al center, span 2");
+                add(clearButton);
+                add(executeButton);
                 
                 executeButton.addActionListener(this);
+                clearButton.addActionListener(this);
+            }
+            
+            private void clearDeadLists()
+            {
+                deadNodes.clear();
+                deadEdges.clear();
+                parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
             }
             
             private void executeDelete()
@@ -405,6 +415,9 @@ public class SuicideIntentControlPanel extends JPanel
                 Object src  =   e.getSource();
                 if(src == executeButton)
                     executeDelete();
+                
+                else if(src == clearButton)
+                    clearDeadLists();
             }
         }
     }
