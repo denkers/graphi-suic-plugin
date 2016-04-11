@@ -63,16 +63,19 @@ public class SuicideIntentControlPanel extends JPanel
         setBorder(BorderFactory.createTitledBorder("Suicide intent controls"));
         
         this.parentPanel    =   parentPanel;
+        deadNodes           =   new ArrayList<>();
+        deadEdges           =   new ArrayList<>();
         computePanel        =   new ComputePanel();
         simPanel            =   new SuicideSimulationPanel();
         configPanel         =   new SuicideConfigPanel();
         controlsTabPane     =   new JTabbedPane();
-        deadNodes           =   new ArrayList<>();
-        deadEdges           =   new ArrayList<>();
-        
         controlsTabPane.addTab("Computation", computePanel);
         controlsTabPane.addTab("Simulation", simPanel);
         controlsTabPane.addTab("Config", configPanel);
+        
+        RenderContext<Node, Edge> rc  =   parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().getRenderContext();
+        rc.setVertexFillPaintTransformer(new SuicideFillTransformer<>(rc.getPickedVertexState(), deadNodes));
+        rc.setEdgeDrawPaintTransformer(new SuicideFillTransformer<>(rc.getPickedEdgeState(), deadEdges));
         
         add(controlsTabPane);
     }
@@ -138,10 +141,6 @@ public class SuicideIntentControlPanel extends JPanel
             resetButton.addActionListener(this);
             computeButton.addActionListener(this);    
             computeBox.addActionListener(this);
-            
-            RenderContext<Node, Edge> rc  =   parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().getRenderContext();
-            rc.setVertexFillPaintTransformer(new SuicideFillTransformer<>(rc.getPickedVertexState(), deadNodes));
-            rc.setEdgeFillPaintTransformer(new SuicideFillTransformer<>(rc.getPickedEdgeState(), deadEdges));
         }
         
         private void computeExecute()

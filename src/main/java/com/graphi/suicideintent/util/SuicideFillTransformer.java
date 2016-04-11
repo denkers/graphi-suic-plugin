@@ -11,18 +11,20 @@ import java.util.List;
 public class SuicideFillTransformer<T extends GraphObject> extends ObjectFillTransformer<T>
 {
     private List<T> deletedList;
+    private Color deadColour;
     
     public SuicideFillTransformer(PickedInfo<T> pickedInfo, List<T> deletedList) 
     {
         super(pickedInfo);
         this.deletedList    =   deletedList;
+        deadColour          =   new Color(214, 26, 45);
     }
     
     @Override
     public Paint transform(T gObj)
     {
         if(deletedList.contains(gObj))
-            return Color.BLACK;
+            return deadColour;
         
         else 
             return super.transform(gObj);
