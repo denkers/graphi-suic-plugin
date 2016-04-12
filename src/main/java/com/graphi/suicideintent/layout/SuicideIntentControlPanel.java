@@ -183,20 +183,22 @@ public class SuicideIntentControlPanel extends JPanel
             else JOptionPane.showMessageDialog(null, "[Error] Invalid playback structure");
         }
         
-        public void updateDataSetCount(int count)
+        public void updateDataSetCount()
         {
+            int size = parentPanel.getScreenPanel().getGraphPanel().getGraphPlayback().getSize();
+            dataSetsLabel.setText("" + size);
         }
         
         private void changeComputePanel()
         {
             int selectedOption  =   computeBox.getSelectedIndex();
-            String cardName     =   "";
+            String cardName;
             
             switch(selectedOption)
             {
                 case 0: cardName    =   COMPUTE_ALL_CARD; break;
                 case 1: cardName    =   COMPUTE_SPECIFIC_CARD; break;
-                case 2: cardName    =   COMPUTE_AVERAGE_CARD; break;
+                case 2: cardName    =   COMPUTE_AVERAGE_CARD; updateDataSetCount(); break;
                 default: return;
             }
             
