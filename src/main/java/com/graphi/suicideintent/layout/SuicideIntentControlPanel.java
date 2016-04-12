@@ -9,17 +9,19 @@ package com.graphi.suicideintent.layout;
 import com.graphi.sim.GraphPlayback;
 import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.IntentComputation;
-import static com.graphi.suicideintent.IntentComputation.computeEvalScores;
 import com.graphi.suicideintent.SuicideIntentConfig;
 import com.graphi.suicideintent.SuicideIntentPlugin;
 import com.graphi.suicideintent.sim.SuicideSimulation;
 import com.graphi.suicideintent.util.EvalNodeColourTransformer;
 import com.graphi.suicideintent.util.EvalNodeSizeTransformer;
+import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideFillTransformer;
+import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.ComponentUtils;
 import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
 import com.graphi.util.Node;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.RenderContext;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -27,7 +29,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,6 @@ public class SuicideIntentControlPanel extends JPanel
     private SuicideConfigPanel configPanel;
     private ComputePanel computePanel;
     private JTabbedPane controlsTabPane;
-    private List<Node> deadNodes;
-    private List<Edge> deadEdges;
     
     public SuicideIntentControlPanel(PluginLayout parentPanel)
     {
@@ -64,8 +63,6 @@ public class SuicideIntentControlPanel extends JPanel
         setBorder(BorderFactory.createTitledBorder("Suicide intent controls"));
         
         this.parentPanel    =   parentPanel;
-        deadNodes           =   new ArrayList<>();
-        deadEdges           =   new ArrayList<>();
         computePanel        =   new ComputePanel();
         simPanel            =   new SuicideSimulationPanel();
         configPanel         =   new SuicideConfigPanel();
@@ -75,8 +72,8 @@ public class SuicideIntentControlPanel extends JPanel
         controlsTabPane.addTab("Config", configPanel);
         
         RenderContext<Node, Edge> rc  =   parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().getRenderContext();
-        rc.setVertexFillPaintTransformer(new SuicideFillTransformer<>(rc.getPickedVertexState(), deadNodes));
-        rc.setEdgeDrawPaintTransformer(new SuicideFillTransformer<>(rc.getPickedEdgeState(), deadEdges));
+        rc.setVertexFillPaintTransformer(new SuicideFillTransformer<>(rc.getPickedVertexState()));
+        rc.setEdgeDrawPaintTransformer(new SuicideFillTransformer<>(rc.getPickedEdgeState()));
         
         add(controlsTabPane);
     }
@@ -159,7 +156,7 @@ public class SuicideIntentControlPanel extends JPanel
             int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
             GraphData gData         =   parentPanel.getGraphData();
             
-            Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll, deadNodes);
+            Map<Node, Double> scores    =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
             DefaultTableModel model     =   IntentComputation.getIntentTableModel(scores);
             parentPanel.getScreenPanel().getDataPanel().setComputationModel(model);
             
@@ -225,7 +222,7 @@ public class SuicideIntentControlPanel extends JPanel
             boolean computeAll                  =   computeBox.getSelectedIndex() == 0;
             boolean displayColour               =   displayColourCheck.isSelected();
             boolean displaySize                 =   displaySizeCheck.isSelected();
-            Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll, deadNodes);
+            Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
 
             for(Entry<Node, Double> score : scores.entrySet())
                 outputNodeSelfEvaluation(score.getKey().getID(), score.getValue());
@@ -391,10 +388,15 @@ public class SuicideIntentControlPanel extends JPanel
                 clearButton.addActionListener(this);
             }
             
-            private void clearDeadLists()
+            private void clearDeadObjects()
             {
-                deadNodes.clear();
-                deadEdges.clear();
+                Graph<Node, Edge> graph =   parentPanel.getData().getGraph();
+                for(Node node : graph.getVertices())
+                    ((SuicideNode) node).setDeleted(false);
+                
+                for(Edge edge : graph.getEdges())
+                    ((SuicideEdge) edge).setDeleted(false);
+                
                 parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
             }
             
@@ -403,7 +405,7 @@ public class SuicideIntentControlPanel extends JPanel
                 double p            =   (Double) probField.getValue();
                 boolean deleteNodes =   nodeDeleteRadio.isSelected();
                 
-                SuicideSimulation.killGraphObjects(parentPanel.getGraphData().getGraph(), p, deleteNodes, deadNodes, deadEdges);
+                SuicideSimulation.killGraphObjects(parentPanel.getGraphData().getGraph(), p, deleteNodes);
                 parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
             }
                 
@@ -415,7 +417,7 @@ public class SuicideIntentControlPanel extends JPanel
                     executeDelete();
                 
                 else if(src == clearButton)
-                    clearDeadLists();
+                    clearDeadObjects();
             }
         }
     }

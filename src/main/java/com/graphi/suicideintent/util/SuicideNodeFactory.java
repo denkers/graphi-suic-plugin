@@ -6,6 +6,11 @@ import com.graphi.util.factory.NodeFactory;
 
 public class SuicideNodeFactory extends NodeFactory
 {
+    public SuicideNodeFactory()
+    {
+        super();
+    }
+    
     public SuicideNodeFactory(int lastID)
     {
         super(lastID);

@@ -1,5 +1,7 @@
 package com.graphi.suicideintent.sim;
 
+import com.graphi.suicideintent.util.SuicideEdge;
+import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
@@ -27,7 +29,7 @@ public class SuicideSimulation
         }
     }
     
-    public static void killGraphObjects(Graph<Node, Edge> graph, double p, boolean killNodes, List<Node> deadNodes, List<Edge> deadEdges)
+    public static void killGraphObjects(Graph<Node, Edge> graph, double p, boolean killNodes)
     {
         Random rGen         =   new Random();
         Collection gObjs    =   killNodes? graph.getVertices() : graph.getEdges();
@@ -41,11 +43,13 @@ public class SuicideSimulation
                 {
                     Node node                   =   (Node) gObj;
                     Collection<Edge> indEdges   =   graph.getIncidentEdges(node);
-                    deadEdges.addAll(indEdges);
-                    deadNodes.add(node);
+                    ((SuicideNode) node).setDeleted(true);
+                    
+                    for(Edge edge : indEdges)
+                        ((SuicideEdge) edge).setDeleted(true);
                 }
                 
-                else deadEdges.add((Edge) gObj);
+                else ((SuicideEdge) gObj).setDeleted(true);
             }
         }
     }

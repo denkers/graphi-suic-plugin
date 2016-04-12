@@ -6,6 +6,11 @@ import com.graphi.util.factory.EdgeFactory;
 
 public class SuicideEdgeFactory extends EdgeFactory
 {
+    public SuicideEdgeFactory()
+    {
+        super();
+    }
+    
     public SuicideEdgeFactory(int lastID)
     {
         super(lastID);

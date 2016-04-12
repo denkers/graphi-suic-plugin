@@ -8,6 +8,8 @@ package com.graphi.suicideintent.layout;
 
 import com.graphi.app.AppManager;
 import com.graphi.display.layout.MainPanel;
+import com.graphi.suicideintent.util.SuicideEdgeFactory;
+import com.graphi.suicideintent.util.SuicideNodeFactory;
 
 public class PluginLayout extends MainPanel
 {
@@ -18,5 +20,8 @@ public class PluginLayout extends MainPanel
         super(appManager);
         suicideControlPanel =   new SuicideIntentControlPanel(this);
         controlPanel.add(suicideControlPanel);
+        
+        data.setEdgeFactory(new SuicideEdgeFactory());
+        data.setNodeFactory(new SuicideNodeFactory());
     }
 }

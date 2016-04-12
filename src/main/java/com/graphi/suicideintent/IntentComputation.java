@@ -27,9 +27,9 @@ public class IntentComputation
 {
     private static final DecimalFormat FORMATTER  =   new DecimalFormat("#.###");
     
-    public static SparseDoubleMatrix2D getSelfEvaluationVector(int nodeIndex, Graph<Node, Edge> g, List<Node> deadNodes)
+    public static SparseDoubleMatrix2D getSelfEvaluationVector(int nodeIndex, Graph<Node, Edge> g)
     {
-        SuicideGModelTransformer transformer        =   new SuicideGModelTransformer(nodeIndex, deadNodes);
+        SuicideGModelTransformer transformer        =   new SuicideGModelTransformer(nodeIndex);
         SparseDoubleMatrix2D matrix                 =   transformer.transform(g);
         Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
         SparseDoubleMatrix2D evalVector             =   MatrixTools.normalizeVector(evCombo.getValue(), evCombo.getKey());
@@ -37,9 +37,9 @@ public class IntentComputation
         return evalVector;
     }
     
-    public static double getSelfEvaluation(int nodeIndex, Graph<Node, Edge> g, List<Node> deadNodes)
+    public static double getSelfEvaluation(int nodeIndex, Graph<Node, Edge> g)
     {
-        SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(nodeIndex, g, deadNodes);
+        SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(nodeIndex, g);
         return Double.parseDouble(FORMATTER.format(evalVector.get(nodeIndex - 1, 0)));
     }
     
@@ -60,9 +60,9 @@ public class IntentComputation
         return model;
     }
     
-    public static DefaultTableModel getSuicideIntent(GraphData gData, int perspectiveIndex, boolean computeAll, List<Node> deadNodes)
+    public static DefaultTableModel getSuicideIntent(GraphData gData, int perspectiveIndex, boolean computeAll)
     {
-        Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll, deadNodes);
+        Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll);
         return getIntentTableModel(scores);
     }
     
@@ -91,7 +91,7 @@ public class IntentComputation
         return getIntentTableModel(scores);
     }
     
-    public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll, List<Node> deadNodes)
+    public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)
     {
         Map<Node, Double> nodeEvalScores    =   new LinkedHashMap<>();
         
@@ -102,7 +102,7 @@ public class IntentComputation
         {
             if(!computeAll)
             {
-                double eval                     =   IntentComputation.getSelfEvaluation(perspectiveIndex, gData.getGraph(), deadNodes);
+                double eval                     =   IntentComputation.getSelfEvaluation(perspectiveIndex, gData.getGraph());
                 Node node                       =   gData.getNodes().get(perspectiveIndex);
                 nodeEvalScores.put(node, eval);
             }
@@ -111,7 +111,7 @@ public class IntentComputation
             {
                 for(Node node : gData.getGraph().getVertices())
                 {
-                    double eval     =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph(), deadNodes);
+                    double eval     =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
                     nodeEvalScores.put(node, eval);
                 }
             }
