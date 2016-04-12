@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -249,9 +250,6 @@ public class SuicideIntentControlPanel extends JPanel
             if(src == resetButton)
                 resetSuicideIntentDisplay();
 
-            else if(src == computeButton)
-                displayEvalScores();
-            
             else if(src == computeBox)
                 changeComputePanel();
             

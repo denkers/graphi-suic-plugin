@@ -44,7 +44,7 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
                 if(deadNodes.contains(next))
                     matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDeadWeight());
                 
-                else if(next.getID() == perspectiveIndex)
+                else if(current.getID() == perspectiveIndex && next.getID() == perspectiveIndex)
                     matrix.set(row, col, SuicideIntentPlugin.CONFIG.getSelfWeight());
                 
                 else

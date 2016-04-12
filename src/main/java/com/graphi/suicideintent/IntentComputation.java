@@ -15,22 +15,24 @@ import com.graphi.util.GraphData;
 import com.graphi.util.MatrixTools;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.PriorityQueue;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class IntentComputation 
 {
+    private static final DecimalFormat FORMATTER  =   new DecimalFormat("#.###");
+    
     public static SparseDoubleMatrix2D getSelfEvaluationVector(int nodeIndex, Graph<Node, Edge> g, List<Node> deadNodes)
     {
-        SuicideGModelTransformer transformer    =   new SuicideGModelTransformer(nodeIndex, deadNodes);
-        SparseDoubleMatrix2D matrix             =   transformer.transform(g);
-        SparseDoubleMatrix2D evalVector         =   MatrixTools.powerIteration(matrix);
+        SuicideGModelTransformer transformer        =   new SuicideGModelTransformer(nodeIndex, deadNodes);
+        SparseDoubleMatrix2D matrix                 =   transformer.transform(g);
+        Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
+        SparseDoubleMatrix2D evalVector             =   MatrixTools.normalizeVector(evCombo.getValue(), evCombo.getKey());
         
         return evalVector;
     }
@@ -38,7 +40,7 @@ public class IntentComputation
     public static double getSelfEvaluation(int nodeIndex, Graph<Node, Edge> g, List<Node> deadNodes)
     {
         SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(nodeIndex, g, deadNodes);
-        return evalVector.get(0, nodeIndex);
+        return Double.parseDouble(FORMATTER.format(evalVector.get(nodeIndex - 1, 0)));
     }
     
     public static DefaultTableModel getIntentTableModel(Map<Node, Double> scores)
