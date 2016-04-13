@@ -10,6 +10,8 @@ import cern.colt.matrix.impl.SparseDoubleMatrix2D;
 import com.graphi.sim.GraphPlayback;
 import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.util.SuicideGModelTransformer;
+import com.graphi.suicideintent.util.SuicideInt;
+import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
 import com.graphi.util.GraphUtilities;
@@ -112,8 +114,14 @@ public class IntentComputation
             {
                 for(Node otherNode : gData.getGraph().getVertices())
                 {
-                    double eval     =   IntentComputation.getSelfEvaluation(otherNode, gData.getGraph());
-                    nodeEvalScores.put(node, eval);
+                    double eval;
+                    
+                    if(((SuicideNode) node).isDeleted())
+                        eval        =   ((SuicideNode) node).getSuicideIntent();
+                    else 
+                        eval        =   IntentComputation.getSelfEvaluation(otherNode, gData.getGraph());
+                    
+                    nodeEvalScores.put(otherNode, eval);
                 }
             }
         }
