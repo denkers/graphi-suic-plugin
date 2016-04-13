@@ -325,6 +325,7 @@ public class SuicideIntentControlPanel extends JPanel
     private class SuicideSimulationPanel extends JPanel implements ActionListener
     {
         private final String RAND_DELETE_CARD   =   "Delete random";
+        private final String AUTO_DELETE_CARD   =   "Auto delete";
         
         private DeleteRandomSimPanel randomDeletePanel;
         private JComboBox simTypeBox;
@@ -339,6 +340,7 @@ public class SuicideIntentControlPanel extends JPanel
             
             simChangePanel.add(randomDeletePanel, RAND_DELETE_CARD);
             simTypeBox.addItem(RAND_DELETE_CARD);
+            simTypeBox.addItem(AUTO_DELETE_CARD);
             simTypeBox.addActionListener(this);
             
             add(simTypeBox, "wrap, al center");
