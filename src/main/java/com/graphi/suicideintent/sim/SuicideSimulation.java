@@ -6,7 +6,6 @@ import com.graphi.util.Edge;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 
 public class SuicideSimulation
@@ -50,6 +49,24 @@ public class SuicideSimulation
                 }
                 
                 else ((SuicideEdge) gObj).setDeleted(true);
+            }
+        }
+    }
+    
+    public static void killNodes(Graph<Node, Edge> graph, double pThreshold)
+    {
+        Random rGen =   new Random();
+        for(Node node : graph.getVertices())
+        {
+            SuicideNode suicNode    =   (SuicideNode) node;
+            if(!suicNode.isDeleted())
+            {
+                double suicIntent   =   suicNode.getSuicideIntent();
+                double prob         =   suicIntent > pThreshold? suicIntent : pThreshold;
+                double p            =   rGen.nextDouble();
+                
+                if(p <= prob) suicNode.setDeleted(true);
+                
             }
         }
     }
