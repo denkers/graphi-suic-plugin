@@ -7,6 +7,7 @@ import java.awt.Color;
 public class SuicideNode extends Node implements SuicideInt
 {
     private boolean isDeleted;
+    private double suicideIntent;
     
     public SuicideNode(int id)
     {
@@ -40,4 +41,13 @@ public class SuicideNode extends Node implements SuicideInt
         return isDeleted;
     }
     
+    public double getSuicideIntent()
+    {
+        return suicideIntent;
+    }
+    
+    public void setSuicideIntent(double suicideIntent)
+    {
+        this.suicideIntent  =   suicideIntent;
+    }
 }

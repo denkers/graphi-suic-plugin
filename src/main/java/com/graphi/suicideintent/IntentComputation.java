@@ -12,6 +12,7 @@ import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.util.SuicideGModelTransformer;
 import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
+import com.graphi.util.GraphUtilities;
 import com.graphi.util.MatrixTools;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
@@ -27,20 +28,21 @@ public class IntentComputation
 {
     private static final DecimalFormat FORMATTER  =   new DecimalFormat("#.###");
     
-    public static SparseDoubleMatrix2D getSelfEvaluationVector(int nodeIndex, Graph<Node, Edge> g)
+    public static SparseDoubleMatrix2D getSelfEvaluationVector(Node node, Graph<Node, Edge> g)
     {
-        SuicideGModelTransformer transformer        =   new SuicideGModelTransformer(nodeIndex);
-        SparseDoubleMatrix2D matrix                 =   transformer.transform(g);
+        SuicideGModelTransformer transformer        =   new SuicideGModelTransformer(node);
+        Graph<Node, Edge> neighbourhood             =   GraphUtilities.getNeighbourhood(g, node, 0);
+        SparseDoubleMatrix2D matrix                 =   transformer.transform(neighbourhood);
         Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
         SparseDoubleMatrix2D evalVector             =   MatrixTools.normalizeVector(evCombo.getValue(), evCombo.getKey());
         
         return evalVector;
     }
     
-    public static double getSelfEvaluation(int nodeIndex, Graph<Node, Edge> g)
+    public static double getSelfEvaluation(Node node, Graph<Node, Edge> g)
     {
-        SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(nodeIndex, g);
-        return Double.parseDouble(FORMATTER.format(evalVector.get(nodeIndex - 1, 0)));
+        SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(node, g);
+        return Double.parseDouble(FORMATTER.format(evalVector.get(node.getID() - 1, 0)));
     }
     
     public static DefaultTableModel getIntentTableModel(Map<Node, Double> scores)
@@ -60,9 +62,9 @@ public class IntentComputation
         return model;
     }
     
-    public static DefaultTableModel getSuicideIntent(GraphData gData, int perspectiveIndex, boolean computeAll)
+    public static DefaultTableModel getSuicideIntent(GraphData gData, Node node, boolean computeAll)
     {
-        Map<Node, Double> scores    =   computeEvalScores(gData, perspectiveIndex, computeAll);
+        Map<Node, Double> scores    =   computeEvalScores(gData, node, computeAll);
         return getIntentTableModel(scores);
     }
     
@@ -91,27 +93,26 @@ public class IntentComputation
         return getIntentTableModel(scores);
     }
     
-    public static Map<Node, Double> computeEvalScores(GraphData gData, int perspectiveIndex, boolean computeAll)
+    public static Map<Node, Double> computeEvalScores(GraphData gData, Node node, boolean computeAll)
     {
         Map<Node, Double> nodeEvalScores    =   new LinkedHashMap<>();
         
-        if(!computeAll && gData.getNodes().containsKey(perspectiveIndex))
+        if(!computeAll && gData.getNodes().containsKey(node.getID()))
             JOptionPane.showMessageDialog(null, "That node ID does not exist");
         
         else
         {
             if(!computeAll)
             {
-                double eval                     =   IntentComputation.getSelfEvaluation(perspectiveIndex, gData.getGraph());
-                Node node                       =   gData.getNodes().get(perspectiveIndex);
+                double eval                     =   IntentComputation.getSelfEvaluation(node, gData.getGraph());
                 nodeEvalScores.put(node, eval);
             }
             
             else
             {
-                for(Node node : gData.getGraph().getVertices())
+                for(Node otherNode : gData.getGraph().getVertices())
                 {
-                    double eval     =   IntentComputation.getSelfEvaluation(node.getID(), gData.getGraph());
+                    double eval     =   IntentComputation.getSelfEvaluation(otherNode, gData.getGraph());
                     nodeEvalScores.put(node, eval);
                 }
             }

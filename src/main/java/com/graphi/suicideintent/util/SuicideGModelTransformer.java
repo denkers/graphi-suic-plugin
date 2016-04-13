@@ -18,11 +18,11 @@ import org.apache.commons.collections15.Transformer;
 
 public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, SparseDoubleMatrix2D>
 {
-    private final int perspectiveIndex;
+    private final Node perspective;
     
-    public SuicideGModelTransformer(int perspectiveIndex)
+    public SuicideGModelTransformer(Node perspective)
     {
-        this.perspectiveIndex   =   perspectiveIndex;
+        this.perspective   =   perspective;
     }
     
     @Override
@@ -42,7 +42,7 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
                 if(((SuicideInt) next).isDeleted())
                     matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDeadWeight());
                 
-                else if(current.getID() == perspectiveIndex && next.getID() == perspectiveIndex)
+                else if(current.equals(perspective) && next.equals(perspective))
                     matrix.set(row, col, SuicideIntentPlugin.CONFIG.getSelfWeight());
                 
                 else

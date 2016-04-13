@@ -155,8 +155,9 @@ public class SuicideIntentControlPanel extends JPanel
             boolean computeAll      =   computeBox.getSelectedIndex() == 0;
             int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
             GraphData gData         =   parentPanel.getGraphData();
+            Node perspective        =   gData.getNodes().get(perspectiveIndex);
             
-            Map<Node, Double> scores    =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
+            Map<Node, Double> scores    =   IntentComputation.computeEvalScores(gData, perspective, computeAll);
             DefaultTableModel model     =   IntentComputation.getIntentTableModel(scores);
             parentPanel.getScreenPanel().getDataPanel().setComputationModel(model);
             
@@ -221,10 +222,11 @@ public class SuicideIntentControlPanel extends JPanel
         {
             int perspectiveIndex                =   (int) perspectiveSpinner.getValue();
             GraphData gData                     =   parentPanel.getGraphData();
+            Node perspective                    =   gData.getNodes().get(perspectiveIndex);
             boolean computeAll                  =   computeBox.getSelectedIndex() == 0;
             boolean displayColour               =   displayColourCheck.isSelected();
             boolean displaySize                 =   displaySizeCheck.isSelected();
-            Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspectiveIndex, computeAll);
+            Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspective, computeAll);
 
             for(Entry<Node, Double> score : scores.entrySet())
                 outputNodeSelfEvaluation(score.getKey().getID(), score.getValue());
