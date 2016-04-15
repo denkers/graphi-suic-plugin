@@ -1,25 +1,24 @@
 package com.graphi.suicideintent.util;
 
 import com.graphi.util.Edge;
-import edu.uci.ics.jung.graph.util.EdgeType;
 
 public class SuicideEdge extends Edge implements SuicideInt
 {
     private boolean isDeleted;
     
-    public SuicideEdge(int id, EdgeType edgeType)
+    public SuicideEdge(int id)
     {
-        super(id, edgeType);
+        super(id);
     }
     
-    public SuicideEdge(int id, double weight, EdgeType edgeType)
+    public SuicideEdge(int id, double weight)
     {
-        super(id, weight, edgeType);
+        super(id, weight);
     }
     
     public SuicideEdge(Edge edge)
     {
-        this(edge.getID(), edge.getWeight(), edge.getEdgeType());
+        this(edge.getID(), edge.getWeight());
     }
     
     @Override
@@ -34,4 +33,12 @@ public class SuicideEdge extends Edge implements SuicideInt
         return isDeleted;
     }
     
+    @Override
+    public Edge copyGraphObject()
+    {
+        SuicideEdge edge    =   new SuicideEdge(id, weight);
+        edge.setDeleted(isDeleted);
+        
+        return edge;
+    }
 }

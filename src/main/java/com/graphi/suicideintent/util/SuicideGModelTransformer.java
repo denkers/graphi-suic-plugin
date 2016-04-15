@@ -50,7 +50,7 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
                     if(g.isNeighbor(current, next))
                     {
                         Edge edge   =   g.findEdge(current, next);
-                        if(edge.getEdgeType() == EdgeType.UNDIRECTED)
+                        if(g.getEdgeType(edge) == EdgeType.UNDIRECTED)
                             matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDirectedWeight());
                         else
                             matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDirectedWeight());

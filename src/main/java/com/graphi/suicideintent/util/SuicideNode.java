@@ -50,4 +50,13 @@ public class SuicideNode extends Node implements SuicideInt
     {
         this.suicideIntent  =   suicideIntent;
     }
+    
+    @Override
+    public Node copyGraphObject()
+    {
+        SuicideNode node    =    new SuicideNode(id, name);
+        node.setDeleted(isDeleted);
+        
+        return node;
+    }
 }
