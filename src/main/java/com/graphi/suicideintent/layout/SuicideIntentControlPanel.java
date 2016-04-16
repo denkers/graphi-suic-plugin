@@ -52,8 +52,8 @@ import net.miginfocom.swing.MigLayout;
 public class SuicideIntentControlPanel extends JPanel
 {
     private PluginLayout parentPanel;
-    private SuicideSimulationPanel simPanel;
-    private SuicideConfigPanel configPanel;
+    private SimulationPanel simPanel;
+    private ConfigPanel configPanel;
     private ComputePanel computePanel;
     private JTabbedPane controlsTabPane;
     
@@ -64,8 +64,8 @@ public class SuicideIntentControlPanel extends JPanel
         
         this.parentPanel    =   parentPanel;
         computePanel        =   new ComputePanel();
-        simPanel            =   new SuicideSimulationPanel();
-        configPanel         =   new SuicideConfigPanel();
+        simPanel            =   new SimulationPanel(parentPanel);
+        configPanel         =   new ConfigPanel();
         controlsTabPane     =   new JTabbedPane();
         controlsTabPane.addTab("Computation", computePanel);
         controlsTabPane.addTab("Simulation", simPanel);
@@ -256,175 +256,6 @@ public class SuicideIntentControlPanel extends JPanel
             
             else if(src == computeButton)
                 computeExecute();
-        }
-    }
-    
-    private class SuicideConfigPanel extends JPanel implements ActionListener
-    {
-        private JButton reloadConfigBtn;
-        private JLabel dirWeightLabel, undirWeightLabel, selfWeightLabel;
-        private JLabel deadWeightLabel;
-        
-        public SuicideConfigPanel()
-        {
-            setLayout(new MigLayout("fillx"));
-            reloadConfigBtn     =   new JButton("Reload config");
-            dirWeightLabel      =   new JLabel();
-            undirWeightLabel    =   new JLabel();
-            selfWeightLabel     =   new JLabel();
-            deadWeightLabel     =   new JLabel();
-
-            JLabel dirWeightTitle   =   new JLabel("Directed weight:");
-            JLabel undirWeightTitle =   new JLabel("Undirected weight:");
-            JLabel selfWeightTitle  =   new JLabel("Self weight:");
-            JLabel deadWeightTitle  =   new JLabel("Dead weight:");
-            Font titleFont          =   new Font("Arial", Font.BOLD, 12);
-            
-            dirWeightTitle.setFont(titleFont);
-            undirWeightTitle.setFont(titleFont);
-            selfWeightTitle.setFont(titleFont);
-            deadWeightTitle.setFont(titleFont);
-            
-            add(dirWeightTitle);
-            add(dirWeightLabel, "wrap");
-            add(undirWeightTitle);
-            add(undirWeightLabel, "wrap");
-            add(selfWeightTitle);
-            add(selfWeightLabel, "wrap");
-            add(deadWeightTitle);
-            add(deadWeightLabel, "wrap");
-            add(reloadConfigBtn, "al center, span 2");
-            
-            updateConfig();
-            reloadConfigBtn.addActionListener(this);
-        }
-        
-        private void updateConfig()
-        {
-            SuicideIntentConfig config  =   SuicideIntentPlugin.CONFIG;
-            dirWeightLabel.setText("" + config.getDirectedWeight());
-            undirWeightLabel.setText("" + config.getUndirectedWeight());
-            selfWeightLabel.setText("" + config.getSelfWeight());
-            deadWeightLabel.setText("" + config.getDeadWeight());
-        }
-        
-        @Override
-        public void actionPerformed(ActionEvent e) 
-        {
-            Object src  =   e.getSource();
-            
-            if(src == reloadConfigBtn)
-            {
-                SuicideIntentPlugin.reloadConfig();
-                updateConfig();
-            }
-        }
-        
-    }
-    
-    private class SuicideSimulationPanel extends JPanel implements ActionListener
-    {
-        private final String RAND_DELETE_CARD   =   "Delete random";
-        private final String AUTO_DELETE_CARD   =   "Auto delete";
-        
-        private DeleteRandomSimPanel randomDeletePanel;
-        private JComboBox simTypeBox;
-        private JPanel simChangePanel;
-        
-        public SuicideSimulationPanel()
-        {
-            setLayout(new MigLayout("fillx"));
-            simChangePanel      =   new JPanel(new CardLayout());
-            randomDeletePanel   =   new DeleteRandomSimPanel();
-            simTypeBox          =   new JComboBox();
-            
-            simChangePanel.add(randomDeletePanel, RAND_DELETE_CARD);
-            simTypeBox.addItem(RAND_DELETE_CARD);
-            simTypeBox.addItem(AUTO_DELETE_CARD);
-            simTypeBox.addActionListener(this);
-            
-            add(simTypeBox, "wrap, al center");
-            add(simChangePanel, "al center");
-        }
-        
-        private void changeSim(String name)
-        {
-            CardLayout cLayout  =   (CardLayout) simChangePanel.getLayout();
-            cLayout.show(simChangePanel, name);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) 
-        {
-            Object src  =   e.getSource();
-            if(src == simTypeBox)
-                changeSim(simTypeBox.getSelectedItem().toString());
-        }
-        
-        private class DeleteRandomSimPanel extends JPanel implements ActionListener
-        {
-            private JRadioButton edgeDeleteRadio, nodeDeleteRadio;
-            private ButtonGroup objDeleteGroup;
-            private JSpinner probField;
-            private JButton executeButton, clearButton;
-            
-            public DeleteRandomSimPanel()
-            {
-                setLayout(new MigLayout("fillx"));
-                edgeDeleteRadio =   new JRadioButton("Edges");
-                nodeDeleteRadio =   new JRadioButton("Nodes");
-                probField       =   new JSpinner(new SpinnerNumberModel(0.5, 0.0, 1.0, 0.1));
-                objDeleteGroup  =   new ButtonGroup();
-                executeButton   =   new JButton("Execute");
-                clearButton     =   new JButton("Clear");
-                    
-                probField.setPreferredSize(new Dimension(50, 10));
-                objDeleteGroup.add(edgeDeleteRadio);
-                objDeleteGroup.add(nodeDeleteRadio);
-                nodeDeleteRadio.setSelected(true);
-                
-                add(nodeDeleteRadio, "al center");
-                add(edgeDeleteRadio, "wrap");
-                add(new JLabel("Probability"));
-                add(probField, "wrap");
-                add(clearButton);
-                add(executeButton);
-                
-                executeButton.addActionListener(this);
-                clearButton.addActionListener(this);
-            }
-            
-            private void clearDeadObjects()
-            {
-                Graph<Node, Edge> graph =   parentPanel.getData().getGraph();
-                for(Node node : graph.getVertices())
-                    ((SuicideNode) node).setDeleted(false);
-                
-                for(Edge edge : graph.getEdges())
-                    ((SuicideEdge) edge).setDeleted(false);
-                
-                parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
-            }
-            
-            private void executeDelete()
-            {
-                double p            =   (Double) probField.getValue();
-                boolean deleteNodes =   nodeDeleteRadio.isSelected();
-                
-                SuicideSimulation.killGraphObjects(parentPanel.getGraphData().getGraph(), p, deleteNodes);
-                parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
-            }
-                
-            @Override
-            public void actionPerformed(ActionEvent e) 
-            {
-                Object src  =   e.getSource();
-                if(src == executeButton)
-                    executeDelete();
-                
-                else if(src == clearButton)
-                    clearDeadObjects();
-            }
         }
     }
 }
