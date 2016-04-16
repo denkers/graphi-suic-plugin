@@ -56,6 +56,7 @@ public class SuicideNode extends Node implements SuicideInt
     {
         SuicideNode node    =    new SuicideNode(id, name);
         node.setDeleted(isDeleted);
+        node.setSuicideIntent(suicideIntent);
         
         return node;
     }
