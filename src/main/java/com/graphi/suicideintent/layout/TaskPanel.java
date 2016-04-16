@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -59,30 +60,26 @@ public class TaskPanel extends JPanel implements ActionListener
     {
         private JButton addButton;
         private JComboBox optionsBox;
-        private DefaultTableModel taskModel;
-        private JTable taskTable;
+        private JPanel taskListPanel;
         
         public TaskPopupPanel()
         {
             setLayout(new BorderLayout());
             addButton       =   new JButton("Add task");
             optionsBox      =   new JComboBox();
-            taskModel       =   new DefaultTableModel();
-            taskTable       =   new JTable(taskModel);
+            taskListPanel   =   new JPanel();
             
             
             JPanel topControlsPanel =   new JPanel();
             topControlsPanel.add(optionsBox);
             topControlsPanel.add(addButton);
-            
-            JPanel listPanel    =   new JPanel();
-            listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.Y_AXIS));
+            taskListPanel.setLayout(new BoxLayout(taskListPanel, BoxLayout.Y_AXIS));
             
             optionsBox.addItem("Show Vertex Labels");
             TaskItemPanel itemOne   =    new TaskItemPanel(0);
-            listPanel.add(itemOne);
+            taskListPanel.add(itemOne);
             
-            add(listPanel, BorderLayout.CENTER);
+            add(taskListPanel, BorderLayout.CENTER);
             add(topControlsPanel, BorderLayout.NORTH);
         }
         
@@ -96,9 +93,11 @@ public class TaskPanel extends JPanel implements ActionListener
             {
                 setLayout(new BorderLayout());
                 this.optionIndex    =   optionIndex;
-                removeButton        =   new JButton("R");
+                removeButton        =   new JButton(new ImageIcon(controlPanel.getPluginLayout().deleteImage));
                 taskLabel           =   new JLabel("" + optionsBox.getItemAt(optionIndex));
-                
+                taskLabel.setIcon(new ImageIcon(controlPanel.getPluginLayout().executeImage));
+
+                removeButton.addActionListener(this);
                 add(taskLabel, BorderLayout.CENTER);
                 add(removeButton, BorderLayout.EAST);
             }
@@ -111,6 +110,8 @@ public class TaskPanel extends JPanel implements ActionListener
             @Override
             public void actionPerformed(ActionEvent e) 
             {
+                taskListPanel.remove(this);
+                taskListPanel.revalidate();
             }
         }
     }
