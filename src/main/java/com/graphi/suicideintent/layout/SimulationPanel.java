@@ -30,11 +30,12 @@ public class SimulationPanel extends JPanel implements ActionListener
     private DeleteRandomSimPanel randomDeletePanel;
     private JComboBox simTypeBox;
     private JPanel simChangePanel;
-    private PluginLayout parentPanel;
+    private SuicideIntentControlPanel parentPanel;
 
-    public SimulationPanel(PluginLayout parentPanel)
+    public SimulationPanel(SuicideIntentControlPanel parentPanel)
     {
         setLayout(new MigLayout("fillx"));
+        this.parentPanel    =   parentPanel;
         simChangePanel      =   new JPanel(new CardLayout());
         randomDeletePanel   =   new DeleteRandomSimPanel();
         simTypeBox          =   new JComboBox();
@@ -97,14 +98,14 @@ public class SimulationPanel extends JPanel implements ActionListener
 
         private void clearDeadObjects()
         {
-            Graph<Node, Edge> graph =   parentPanel.getData().getGraph();
+            Graph<Node, Edge> graph =   parentPanel.getPluginLayout().getData().getGraph();
             for(Node node : graph.getVertices())
                 ((SuicideNode) node).setDeleted(false);
 
             for(Edge edge : graph.getEdges())
                 ((SuicideEdge) edge).setDeleted(false);
 
-            parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
+            parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
         }
 
         private void executeDelete()
@@ -112,8 +113,8 @@ public class SimulationPanel extends JPanel implements ActionListener
             double p            =   (Double) probField.getValue();
             boolean deleteNodes =   nodeDeleteRadio.isSelected();
 
-            SuicideSimulation.killGraphObjects(parentPanel.getGraphData().getGraph(), p, deleteNodes);
-            parentPanel.getScreenPanel().getGraphPanel().getGraphViewer().repaint();
+            SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, deleteNodes);
+            parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
         }
 
         @Override
