@@ -1,10 +1,14 @@
 
 package com.graphi.suicideintent.layout;
 
+import com.graphi.app.Consts;
+import com.graphi.suicideintent.util.ButtonColumn;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,10 +17,21 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import net.miginfocom.swing.MigLayout;
 
 public class TaskPanel extends JPanel implements ActionListener
 {
+    private final String[] OPTIONS    =   
+    { 
+        "Record graph", 
+        "Simulate network", 
+        "Suicide computation", 
+        "Reset network simulation",
+        "Suicide simulation",
+        "Average suicide computation"
+    };
+    
     private JButton setupButton, repeatButton;
     private SuicideIntentControlPanel controlPanel;
     private JComboBox repeatBox;
@@ -44,6 +59,19 @@ public class TaskPanel extends JPanel implements ActionListener
         setupButton.addActionListener(this);
         repeatButton.addActionListener(this);
     }
+    
+    public void executeActions(boolean setup)
+    {
+        DefaultTableModel model =   setup? setupPanel.taskTableModel : repeatPanel.taskTableModel;
+        int rowCount            =   model.getRowCount();
+        
+        
+    }
+    
+    private void handleAction(int index)
+    {
+        
+    }
 
     @Override
     public void actionPerformed(ActionEvent e)
@@ -60,59 +88,84 @@ public class TaskPanel extends JPanel implements ActionListener
     {
         private JButton addButton;
         private JComboBox optionsBox;
-        private JPanel taskListPanel;
+        private JTable taskTable;
+        private DefaultTableModel taskTableModel;
         
         public TaskPopupPanel()
         {
             setLayout(new BorderLayout());
+            setBackground(Consts.PRESET_COL);
             addButton       =   new JButton("Add task");
             optionsBox      =   new JComboBox();
-            taskListPanel   =   new JPanel();
+            taskTableModel  =   new DefaultTableModel()
+            {
+                @Override
+                public boolean isCellEditable(int row, int col)
+                {
+                    return col != 0;
+                }
+            };
             
+            taskTable       =   new JTable(taskTableModel);
+            
+            taskTableModel.addColumn("");
+            taskTableModel.addColumn("");
+            taskTableModel.addRow(new Object[] { "show vertex labels", "" });
+            taskTableModel.addRow(new Object[] { "show vertex labels", "" });
+            taskTable.getColumnModel().getColumn(0).setCellRenderer(new TaskLabelCellRenderer());
+            
+            ButtonColumn btnColumn  =   new ButtonColumn(taskTable, new TaskItemListener(), 1, new ImageIcon(controlPanel.getPluginLayout().deleteImage));
+            
+            taskTable.getColumnModel().getColumn(0).setCellRenderer(new TaskLabelCellRenderer());
+            taskTable.getColumnModel().getColumn(0).setPreferredWidth(120);
+            taskTable.getColumnModel().getColumn(1).setPreferredWidth(5);
+            taskTable.setBackground(Consts.PRESET_COL);
+            
+            JPanel tableWrapper =   new JPanel(new BorderLayout());
+            JPanel outerWrapper =   new JPanel(new BorderLayout());
+            tableWrapper.setBorder(BorderFactory.createTitledBorder("Tasks"));
+            
+            tableWrapper.add(taskTable);
+            outerWrapper.add(tableWrapper);
             
             JPanel topControlsPanel =   new JPanel();
             topControlsPanel.add(optionsBox);
             topControlsPanel.add(addButton);
-            taskListPanel.setLayout(new BoxLayout(taskListPanel, BoxLayout.Y_AXIS));
             
-            optionsBox.addItem("Show Vertex Labels");
-            TaskItemPanel itemOne   =    new TaskItemPanel(0);
-            taskListPanel.add(itemOne);
+            initOptions();
             
-            add(taskListPanel, BorderLayout.CENTER);
+            add(outerWrapper, BorderLayout.CENTER);
             add(topControlsPanel, BorderLayout.NORTH);
         }
         
-        private class TaskItemPanel extends JPanel implements ActionListener
+        private void initOptions()
         {
-            private JButton removeButton;
-            private JLabel taskLabel;
-            private int optionIndex;
-            
-            public TaskItemPanel(int optionIndex)
-            {
-                setLayout(new BorderLayout());
-                this.optionIndex    =   optionIndex;
-                removeButton        =   new JButton(new ImageIcon(controlPanel.getPluginLayout().deleteImage));
-                taskLabel           =   new JLabel("" + optionsBox.getItemAt(optionIndex));
-                taskLabel.setIcon(new ImageIcon(controlPanel.getPluginLayout().executeImage));
+            for(String option : OPTIONS)
+                optionsBox.addItem(option);
+        }
+        
+        private class TaskItemListener extends AbstractAction
+        {
 
-                removeButton.addActionListener(this);
-                add(taskLabel, BorderLayout.CENTER);
-                add(removeButton, BorderLayout.EAST);
-            }
-
-            public int getOptionIndex() 
-            {
-                return optionIndex;
-            }
-            
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                taskListPanel.remove(this);
-                taskListPanel.revalidate();
+                int row =   Integer.valueOf(e.getActionCommand());
+                taskTableModel.removeRow(row);
+            }
+        }
+        
+        private class TaskLabelCellRenderer implements TableCellRenderer
+        {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+            {
+                JLabel taskLabel    =   new JLabel("" + value);
+                taskLabel.setIcon(new ImageIcon(controlPanel.getPluginLayout().executeImage));
+                
+                return taskLabel;
             }
         }
     }
+    
 }
