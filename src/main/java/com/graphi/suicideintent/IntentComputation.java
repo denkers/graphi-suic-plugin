@@ -81,7 +81,7 @@ public class IntentComputation
         DefaultTableModel timeLast  =   entries.get(entries.size() - 1).getComputationModel().getModel();
         
         int row = 0;
-        for(Node node : gData.getGraph().getVertices())
+        for(Node node : entries.get(entries.size() - 1).getGraph().getVertices())
         {
             double scoreFirst       =   (double) timeFirst.getValueAt(row, 1);
             double scoreLast        =   (double) timeLast.getValueAt(row, 1);
