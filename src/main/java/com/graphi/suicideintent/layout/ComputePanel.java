@@ -59,8 +59,8 @@ public class ComputePanel extends JPanel implements ActionListener
         computeSwitchPanel  =   new JPanel(new CardLayout());
 
 
-        computeBox.addItem("All");
         computeBox.addItem("Specific");
+        computeBox.addItem("All");
         computeBox.addItem("Average");
 
         Font titleFont          =   new Font("Arial", Font.BOLD, 12);
@@ -76,12 +76,12 @@ public class ComputePanel extends JPanel implements ActionListener
         averageIntentPanel.add(dataCountTitle);
         averageIntentPanel.add(dataSetsLabel);
 
-        computeSwitchPanel.add(new JPanel(), COMPUTE_ALL_CARD);
         computeSwitchPanel.add(computeSpecificPanel, COMPUTE_SPECIFIC_CARD);
+        computeSwitchPanel.add(new JPanel(), COMPUTE_ALL_CARD);
         computeSwitchPanel.add(averageIntentPanel, COMPUTE_AVERAGE_CARD);
 
-        add(displaySizeCheck);
-        add(displayColourCheck, "wrap");
+      //  add(displaySizeCheck);
+       // add(displayColourCheck, "wrap");
         add(new JLabel("Target options"));
         add(computeBox, "wrap");
         add(computeSwitchPanel, "span 2, wrap");

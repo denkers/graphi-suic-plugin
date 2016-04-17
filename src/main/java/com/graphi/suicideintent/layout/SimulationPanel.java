@@ -42,7 +42,7 @@ public class SimulationPanel extends JPanel implements ActionListener
 
         simChangePanel.add(randomDeletePanel, RAND_DELETE_CARD);
         simTypeBox.addItem(RAND_DELETE_CARD);
-        simTypeBox.addItem(AUTO_DELETE_CARD);
+        //simTypeBox.addItem(AUTO_DELETE_CARD);
         simTypeBox.addActionListener(this);
 
         add(simTypeBox, "wrap, al center");
