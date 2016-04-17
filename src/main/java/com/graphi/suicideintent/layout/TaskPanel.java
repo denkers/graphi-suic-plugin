@@ -107,14 +107,13 @@ public class TaskPanel extends JPanel implements ActionListener
             };
             
             taskTable       =   new JTable(taskTableModel);
+            addButton.setIcon(new ImageIcon(controlPanel.getPluginLayout().addIcon));
             
             taskTableModel.addColumn("");
             taskTableModel.addColumn("");
-            taskTableModel.addRow(new Object[] { "show vertex labels", "" });
-            taskTableModel.addRow(new Object[] { "show vertex labels", "" });
             taskTable.getColumnModel().getColumn(0).setCellRenderer(new TaskLabelCellRenderer());
             
-            ButtonColumn btnColumn  =   new ButtonColumn(taskTable, new TaskItemListener(), 1, new ImageIcon(controlPanel.getPluginLayout().deleteImage));
+            ButtonColumn btnColumn  =   new ButtonColumn(taskTable, new TaskItemListener(), 1, new ImageIcon(controlPanel.getPluginLayout().removeIcon));
             
             taskTable.getColumnModel().getColumn(0).setCellRenderer(new TaskLabelCellRenderer());
             taskTable.getColumnModel().getColumn(0).setPreferredWidth(120);
@@ -161,7 +160,7 @@ public class TaskPanel extends JPanel implements ActionListener
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
             {
                 JLabel taskLabel    =   new JLabel("" + value);
-                taskLabel.setIcon(new ImageIcon(controlPanel.getPluginLayout().executeImage));
+                taskLabel.setIcon(new ImageIcon(controlPanel.getPluginLayout().executeIcon));
                 
                 return taskLabel;
             }
