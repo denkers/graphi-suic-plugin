@@ -5,10 +5,12 @@ import com.graphi.app.Consts;
 import com.graphi.suicideintent.util.ButtonColumn;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -64,13 +66,27 @@ public class TaskPanel extends JPanel implements ActionListener
     {
         DefaultTableModel model =   setup? setupPanel.taskTableModel : repeatPanel.taskTableModel;
         int rowCount            =   model.getRowCount();
+        JComboBox comboBox      =   setupPanel.optionsBox;
         
-        
+        for(int row = 0; row < rowCount; row++)
+        {
+            String option   =   model.getValueAt(row, 0).toString();
+            int actionIndex =   ((DefaultComboBoxModel) comboBox.getModel()).getIndexOf(option);
+            
+            if(actionIndex != -1) handleAction(actionIndex);
+        }
     }
     
-    private void handleAction(int index)
+    private void handleAction(int actionIndex)
     {
+        PluginLayout middleMan  =   controlPanel.getPluginLayout();
         
+        switch(actionIndex)
+        {
+            case 0: middleMan.getScreenPanel().getGraphPanel().addRecordedGraph(); break;
+            case 1: middleMan.getControlPanel().showGeneratorSim(); break;
+            //case 
+        }
     }
 
     @Override
@@ -84,7 +100,7 @@ public class TaskPanel extends JPanel implements ActionListener
             JOptionPane.showMessageDialog(null, repeatPanel, "Manage repeat tasks", JOptionPane.INFORMATION_MESSAGE);
     }
     
-    private class TaskPopupPanel extends JPanel
+    private class TaskPopupPanel extends JPanel implements ActionListener
     {
         private JButton addButton;
         private JComboBox optionsBox;
@@ -95,6 +111,8 @@ public class TaskPanel extends JPanel implements ActionListener
         {
             setLayout(new BorderLayout());
             setBackground(Consts.PRESET_COL);
+            setPreferredSize(new Dimension(300, 270));
+            
             addButton       =   new JButton("Add task");
             optionsBox      =   new JComboBox();
             taskTableModel  =   new DefaultTableModel()
@@ -127,11 +145,12 @@ public class TaskPanel extends JPanel implements ActionListener
             tableWrapper.add(taskTable);
             outerWrapper.add(tableWrapper);
             
-            JPanel topControlsPanel =   new JPanel();
-            topControlsPanel.add(optionsBox);
-            topControlsPanel.add(addButton);
+            JPanel topControlsPanel =   new JPanel(new BorderLayout());
+            topControlsPanel.add(optionsBox, BorderLayout.CENTER);
+            topControlsPanel.add(addButton, BorderLayout.EAST);
             
             initOptions();
+            addButton.addActionListener(this);
             
             add(outerWrapper, BorderLayout.CENTER);
             add(topControlsPanel, BorderLayout.NORTH);
@@ -141,6 +160,12 @@ public class TaskPanel extends JPanel implements ActionListener
         {
             for(String option : OPTIONS)
                 optionsBox.addItem(option);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) 
+        {
+            taskTableModel.addRow(new Object[] { optionsBox.getSelectedItem(), "" });
         }
         
         private class TaskItemListener extends AbstractAction
