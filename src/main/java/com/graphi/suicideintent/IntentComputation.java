@@ -10,7 +10,6 @@ import cern.colt.matrix.impl.SparseDoubleMatrix2D;
 import com.graphi.sim.GraphPlayback;
 import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.util.SuicideGModelTransformer;
-import com.graphi.suicideintent.util.SuicideInt;
 import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
 import com.graphi.util.GraphData;
@@ -19,6 +18,7 @@ import com.graphi.util.MatrixTools;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,21 +30,18 @@ public class IntentComputation
 {
     private static final DecimalFormat FORMATTER  =   new DecimalFormat("#.###");
     
-    public static SparseDoubleMatrix2D getSelfEvaluationVector(Node node, Graph<Node, Edge> g)
-    {
-        SuicideGModelTransformer transformer        =   new SuicideGModelTransformer(node);
-        Graph<Node, Edge> neighbourhood             =   GraphUtilities.getNeighbourhood(g, node, 0);
-        SparseDoubleMatrix2D matrix                 =   transformer.transform(neighbourhood);
-        Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
-        SparseDoubleMatrix2D evalVector             =   MatrixTools.normalizeVector(evCombo.getValue(), evCombo.getKey());
-        
-        return evalVector;
-    }
-    
     public static double getSelfEvaluation(Node node, Graph<Node, Edge> g)
     {
-        SparseDoubleMatrix2D evalVector =   getSelfEvaluationVector(node, g);
-        return Double.parseDouble(FORMATTER.format(evalVector.get(node.getID() - 1, 0)));
+        SuicideGModelTransformer transformer        =   new SuicideGModelTransformer(node);
+        Graph<Node, Edge> neighbourhood             =   GraphUtilities.getNeighbourhood(g, node, 1);
+        int perspectiveIndex                        =   new ArrayList<>(neighbourhood.getVertices()).indexOf(node);
+        SparseDoubleMatrix2D matrix                 =   transformer.transform(neighbourhood);
+        
+        Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
+        SparseDoubleMatrix2D evalVector             =   MatrixTools.normalizeVector(evCombo.getValue(), evCombo.getKey());
+        double evaluation                           =   Double.parseDouble(FORMATTER.format(evalVector.get(perspectiveIndex, 0)));
+        
+        return evaluation;
     }
     
     public static DefaultTableModel getIntentTableModel(Map<Node, Double> scores)
@@ -52,13 +49,15 @@ public class IntentComputation
         DefaultTableModel model     =   new DefaultTableModel();
         model.addColumn("Node ID");
         model.addColumn("Suicide intent");
+        model.addColumn("State");
         
         for(Entry<Node, Double> scoreEntry : scores.entrySet())
         {
             int nodeID      =   scoreEntry.getKey().getID();
             double score    =   scoreEntry.getValue();
+            String state    =   ((SuicideNode) scoreEntry.getKey()).isDeleted()? "DEAD" : "ALIVE";
             
-            model.addRow(new Object[] { nodeID, score });
+            model.addRow(new Object[] { nodeID, score, state });
         }
         
         return model;
@@ -116,11 +115,12 @@ public class IntentComputation
                 {
                     double eval;
                     
-                    if(((SuicideNode) node).isDeleted())
-                        eval        =   ((SuicideNode) node).getSuicideIntent();
+                    if(((SuicideNode) otherNode).isDeleted())
+                        eval        =   ((SuicideNode) otherNode).getSuicideIntent();
                     else 
                         eval        =   IntentComputation.getSelfEvaluation(otherNode, gData.getGraph());
                     
+                    ((SuicideNode) otherNode).setSuicideIntent(eval);
                     nodeEvalScores.put(otherNode, eval);
                 }
             }
