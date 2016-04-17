@@ -75,6 +75,32 @@ public class SuicideIntentControlPanel extends JPanel
     {
         return parentPanel;
     }
+
+    public PluginLayout getParentPanel() 
+    {
+        return parentPanel;
+    }
+
+    public SimulationPanel getSimPanel()
+    {
+        return simPanel;
+    }
+
+    public ConfigPanel getConfigPanel() 
+    {
+        return configPanel;
+    }
+
+    public ComputePanel getComputePanel() 
+    {
+        return computePanel;
+    }
+
+    public TaskPanel getTaskPanel() 
+    {
+        return taskPanel;
+    }
+    
     
     
 }

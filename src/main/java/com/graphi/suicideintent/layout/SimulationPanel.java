@@ -62,6 +62,27 @@ public class SimulationPanel extends JPanel implements ActionListener
         if(src == simTypeBox)
             changeSim(simTypeBox.getSelectedItem().toString());
     }
+    
+    public void clearDeadObjects()
+    {
+        Graph<Node, Edge> graph =   parentPanel.getPluginLayout().getData().getGraph();
+        for(Node node : graph.getVertices())
+            ((SuicideNode) node).setDeleted(false);
+
+        for(Edge edge : graph.getEdges())
+            ((SuicideEdge) edge).setDeleted(false);
+
+        parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
+    }
+
+    public void executeDelete()
+    {
+        double p            =   (Double) randomDeletePanel.probField.getValue();
+        boolean deleteNodes =   randomDeletePanel.nodeDeleteRadio.isSelected();
+
+        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, deleteNodes);
+        parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
+    }
 
     private class DeleteRandomSimPanel extends JPanel implements ActionListener
     {
@@ -94,27 +115,6 @@ public class SimulationPanel extends JPanel implements ActionListener
 
             executeButton.addActionListener(this);
             clearButton.addActionListener(this);
-        }
-
-        private void clearDeadObjects()
-        {
-            Graph<Node, Edge> graph =   parentPanel.getPluginLayout().getData().getGraph();
-            for(Node node : graph.getVertices())
-                ((SuicideNode) node).setDeleted(false);
-
-            for(Edge edge : graph.getEdges())
-                ((SuicideEdge) edge).setDeleted(false);
-
-            parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
-        }
-
-        private void executeDelete()
-        {
-            double p            =   (Double) probField.getValue();
-            boolean deleteNodes =   nodeDeleteRadio.isSelected();
-
-            SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, deleteNodes);
-            parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
         }
 
         @Override

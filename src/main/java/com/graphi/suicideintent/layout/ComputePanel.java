@@ -102,7 +102,7 @@ public class ComputePanel extends JPanel implements ActionListener
             computeSuicideIntent();
     }
 
-    private void computeSuicideIntent()
+    public void computeSuicideIntent()
     {
         boolean computeAll      =   computeBox.getSelectedIndex() == 0;
         int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
@@ -117,7 +117,7 @@ public class ComputePanel extends JPanel implements ActionListener
         parentPanel.getPluginLayout().getScreenPanel().getDataPanel().setComputationContext(contextMessage);
     }
 
-    private void computeAverageSuicideIntent()
+    public void computeAverageSuicideIntent()
     {
         GraphData gData         =   parentPanel.getPluginLayout().getGraphData();
         GraphPlayback playback  =   parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphPlayback();

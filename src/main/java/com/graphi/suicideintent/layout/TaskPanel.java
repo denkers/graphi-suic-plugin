@@ -31,6 +31,7 @@ public class TaskPanel extends JPanel implements ActionListener
         "Suicide computation", 
         "Reset network simulation",
         "Suicide simulation",
+        "Reset suicide simulation",
         "Average suicide computation"
     };
     
@@ -85,7 +86,11 @@ public class TaskPanel extends JPanel implements ActionListener
         {
             case 0: middleMan.getScreenPanel().getGraphPanel().addRecordedGraph(); break;
             case 1: middleMan.getControlPanel().showGeneratorSim(); break;
-            //case 
+            case 2: controlPanel.getComputePanel().computeSuicideIntent(); break;
+            case 3: middleMan.getControlPanel().resetSim(); break;
+            case 4: controlPanel.getSimPanel().executeDelete(); break;
+            case 5: controlPanel.getSimPanel().clearDeadObjects(); break;
+            case 6: controlPanel.getComputePanel().computeAverageSuicideIntent(); break;
         }
     }
 
