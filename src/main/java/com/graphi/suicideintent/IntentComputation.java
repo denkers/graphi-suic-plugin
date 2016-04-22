@@ -98,7 +98,7 @@ public class IntentComputation
     {
         Map<Node, Double> nodeEvalScores    =   new LinkedHashMap<>();
         
-        if(!computeAll && gData.getNodes().containsKey(node.getID()))
+        if(!computeAll && (node == null || gData.getNodes().containsKey(node.getID())))
             JOptionPane.showMessageDialog(null, "That node ID does not exist");
         
         else
