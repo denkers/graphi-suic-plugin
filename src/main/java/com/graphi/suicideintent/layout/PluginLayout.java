@@ -12,18 +12,14 @@ import com.graphi.suicideintent.util.SuicideEdgeFactory;
 import com.graphi.suicideintent.util.SuicideNodeFactory;
 import java.awt.Dimension;
 import javax.swing.Box;
+import javax.swing.JScrollPane;
 
 public class PluginLayout extends MainPanel
 {
-    SuicidePanel suicideControlPanel;
     
     public PluginLayout(AppManager appManager) 
     {
         super(appManager);
-        suicideControlPanel =   new SuicidePanel(this);
-        
-        controlPanel.add(Box.createRigidArea(new Dimension(230, 30)));
-        controlPanel.add(suicideControlPanel);
         
         data.setEdgeFactory(new SuicideEdgeFactory());
         data.setNodeFactory(new SuicideNodeFactory());
@@ -32,6 +28,8 @@ public class PluginLayout extends MainPanel
     @Override
     protected void initComponents()
     {
-        
+        super.initComponents();
+        controlPanel    =   new SuicideControlPanel(this);
+        controlScroll   =   new JScrollPane(controlPanel);
     }
 }

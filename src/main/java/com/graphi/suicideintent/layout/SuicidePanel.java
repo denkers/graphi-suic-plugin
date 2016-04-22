@@ -33,7 +33,6 @@ public class SuicidePanel extends JPanel
         computePanel        =   new ComputePanel(this);
         simPanel            =   new SimulationPanel(this);
         configPanel         =   new ConfigPanel();
-        taskPanel           =   new TaskPanel(this);
         controlsTabPane     =   new JTabbedPane();
         
         controlsTabPane.addTab("Computation", computePanel);
