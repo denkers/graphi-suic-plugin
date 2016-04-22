@@ -42,9 +42,9 @@ public class ComputePanel extends JPanel implements ActionListener
     private JLabel dataSetsLabel;
     private JPanel averageIntentPanel;
     private JPanel computeSwitchPanel;
-    private SuicideIntentControlPanel parentPanel;
+    private SuicidePanel parentPanel;
 
-    public ComputePanel(SuicideIntentControlPanel parentPanel)
+    public ComputePanel(SuicidePanel parentPanel)
     {
         setLayout(new MigLayout("fillx"));
         this.parentPanel    =   parentPanel;
@@ -104,7 +104,7 @@ public class ComputePanel extends JPanel implements ActionListener
 
     public void computeSuicideIntent()
     {
-        boolean computeAll      =   computeBox.getSelectedIndex() == 0;
+        boolean computeAll      =   computeBox.getSelectedIndex() == 1;
         int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
         GraphData gData         =   parentPanel.getPluginLayout().getGraphData();
         Node perspective        =   gData.getNodes().get(perspectiveIndex);
@@ -149,8 +149,8 @@ public class ComputePanel extends JPanel implements ActionListener
 
         switch(selectedOption)
         {
-            case 0: cardName    =   COMPUTE_ALL_CARD; break;
-            case 1: cardName    =   COMPUTE_SPECIFIC_CARD; break;
+            case 0: cardName    =   COMPUTE_SPECIFIC_CARD; break;
+            case 1: cardName    =   COMPUTE_ALL_CARD; break;
             case 2: cardName    =   COMPUTE_AVERAGE_CARD; updateDataSetCount(); break;
             default: return;
         }
@@ -175,7 +175,7 @@ public class ComputePanel extends JPanel implements ActionListener
         int perspectiveIndex                =   (int) perspectiveSpinner.getValue();
         GraphData gData                     =   parentPanel.getPluginLayout().getGraphData();
         Node perspective                    =   gData.getNodes().get(perspectiveIndex);
-        boolean computeAll                  =   computeBox.getSelectedIndex() == 0;
+        boolean computeAll                  =   computeBox.getSelectedIndex() == 1;
         boolean displayColour               =   displayColourCheck.isSelected();
         boolean displaySize                 =   displaySizeCheck.isSelected();
         Map<Node, Double> scores            =   IntentComputation.computeEvalScores(gData, perspective, computeAll);

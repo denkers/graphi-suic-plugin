@@ -1,30 +1,10 @@
 
 package com.graphi.suicideintent.layout;
 
-import com.graphi.app.Consts;
-import com.graphi.suicideintent.util.ButtonColumn;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTable;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import com.graphi.display.layout.controls.TaskControlPanel;
 import net.miginfocom.swing.MigLayout;
 
-public class TaskPanel extends JPanel implements ActionListener
+public class TaskPanel extends TaskControlPanel
 {
     private final String[] OPTIONS    =   
     { 
@@ -37,20 +17,23 @@ public class TaskPanel extends JPanel implements ActionListener
         "Average suicide computation"
     };
     
-    private JButton setupButton, repeatButton;
+ /*   private JButton setupButton, repeatButton;
     private SuicideIntentControlPanel controlPanel;
     private JComboBox repeatBox;
     private TaskPopupPanel setupPanel, repeatPanel;
     private JButton runSetupButton, runRepeatButton;
     private JPanel repeatManyPanel;
-    private JSpinner repeatCountSpinner;
+    private JSpinner repeatCountSpinner; */
     
-    public TaskPanel(SuicideIntentControlPanel controlPanel)
+    private SuicidePanel outer;
+    
+    public TaskPanel(SuicidePanel outer)
     {
+        super(outer.getPluginLayout().getControlPanel());
         setLayout(new MigLayout("fillx"));
         
-        this.controlPanel   =   controlPanel;
-        setupPanel          =   new TaskPopupPanel();
+        this.outer   =   outer;
+        /*setupPanel          =   new TaskPopupPanel();
         repeatPanel         =   new TaskPopupPanel();
         setupButton         =   new JButton("Setup tasks");
         repeatButton        =   new JButton("Repeat tasks");
@@ -78,10 +61,10 @@ public class TaskPanel extends JPanel implements ActionListener
         repeatButton.addActionListener(this);
         repeatBox.addActionListener(this);
         runSetupButton.addActionListener(this);
-        runRepeatButton.addActionListener(this);
+        runRepeatButton.addActionListener(this); */
     }
     
-    public void executeActions(boolean setup, int n)
+    /*public void executeActions(boolean setup, int n)
     {
         DefaultTableModel model =   setup? setupPanel.taskTableModel : repeatPanel.taskTableModel;
         int rowCount            =   model.getRowCount();
@@ -117,9 +100,9 @@ public class TaskPanel extends JPanel implements ActionListener
         switch(actionIndex)
         {
             case 0: middleMan.getScreenPanel().getGraphPanel().addRecordedGraph(); break;
-            case 1: middleMan.getControlPanel().showGeneratorSim(); break;
+            case 1: middleMan.getControlPanel().getSimulationPanel().showGeneratorSim(); break;
             case 2: controlPanel.getComputePanel().computeSuicideIntent(); break;
-            case 3: middleMan.getControlPanel().resetSim(); break;
+            case 3: middleMan.getControlPanel().getSimulationPanel().resetSim(); break;
             case 4: controlPanel.getSimPanel().executeDelete(); break;
             case 5: controlPanel.getSimPanel().clearDeadObjects(); break;
             case 6: controlPanel.getComputePanel().computeAverageSuicideIntent(); break;
@@ -236,6 +219,6 @@ public class TaskPanel extends JPanel implements ActionListener
                 return taskLabel;
             }
         }
-    }
+    } */
     
 }

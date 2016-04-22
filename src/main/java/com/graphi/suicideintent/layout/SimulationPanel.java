@@ -30,9 +30,9 @@ public class SimulationPanel extends JPanel implements ActionListener
     private DeleteRandomSimPanel randomDeletePanel;
     private JComboBox simTypeBox;
     private JPanel simChangePanel;
-    private SuicideIntentControlPanel parentPanel;
+    private SuicidePanel parentPanel;
 
-    public SimulationPanel(SuicideIntentControlPanel parentPanel)
+    public SimulationPanel(SuicidePanel parentPanel)
     {
         setLayout(new MigLayout("fillx"));
         this.parentPanel    =   parentPanel;
