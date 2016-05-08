@@ -17,10 +17,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 public class SuicideIntentConfig 
 {
     public static final String CONFIG_FILE  =   "data/config.xml";
+    private static SuicideIntentConfig instance;
     private double directedWeight;
     private double undirectedWeight;
     private double selfWeight;
@@ -39,7 +39,7 @@ public class SuicideIntentConfig
         this.deadWeight         =   deadWeight;
     }
     
-    public static SuicideIntentConfig getConfig()
+    public static SuicideIntentConfig loadConfig()
     {
         try
         {
@@ -80,5 +80,17 @@ public class SuicideIntentConfig
     public double getDeadWeight()
     {
         return deadWeight;
+    }
+    
+    public static SuicideIntentConfig refreshConfig()
+    {
+        instance    =   loadConfig();
+        return instance;
+    }
+    
+    public static SuicideIntentConfig getConfig()
+    {
+        if(instance == null) instance   =   loadConfig();
+        return instance;
     }
 }

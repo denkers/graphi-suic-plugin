@@ -1,7 +1,7 @@
 
 package com.graphi.suicideintent.layout;
 
-import com.graphi.suicideintent.sim.SuicideSimulation;
+import com.graphi.suicideintent.SuicideSimulation;
 import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;

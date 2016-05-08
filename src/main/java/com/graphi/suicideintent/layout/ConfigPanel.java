@@ -52,7 +52,7 @@ public class ConfigPanel extends JPanel implements ActionListener
 
     private void updateConfig()
     {
-        SuicideIntentConfig config  =   SuicideIntentPlugin.CONFIG;
+        SuicideIntentConfig config  =   SuicideIntentConfig.getConfig();
         dirWeightLabel.setText("" + config.getDirectedWeight());
         undirWeightLabel.setText("" + config.getUndirectedWeight());
         selfWeightLabel.setText("" + config.getSelfWeight());
@@ -66,7 +66,7 @@ public class ConfigPanel extends JPanel implements ActionListener
 
         if(src == reloadConfigBtn)
         {
-            SuicideIntentPlugin.reloadConfig();
+            SuicideIntentConfig.refreshConfig();
             updateConfig();
         }
     }

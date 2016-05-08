@@ -1,4 +1,4 @@
-package com.graphi.suicideintent.sim;
+package com.graphi.suicideintent;
 
 import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideNode;

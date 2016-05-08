@@ -15,17 +15,10 @@ import com.graphi.util.GraphData;
 
 public class SuicideIntentPlugin extends AbstractPlugin
 {
-    public static SuicideIntentConfig CONFIG;
     
     public SuicideIntentPlugin()
     {
         super("SuicideIntent", "Suicide intent plugin");
-        CONFIG  =   SuicideIntentConfig.getConfig();
-    }
-    
-    public static void reloadConfig()
-    {
-        CONFIG  =   SuicideIntentConfig.getConfig();
     }
     
     @Override

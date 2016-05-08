@@ -7,6 +7,7 @@
 package com.graphi.suicideintent.util;
 
 import cern.colt.matrix.impl.SparseDoubleMatrix2D;
+import com.graphi.suicideintent.SuicideIntentConfig;
 import com.graphi.suicideintent.SuicideIntentPlugin;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
@@ -31,7 +32,9 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
         int n                           =   g.getVertexCount();
         SparseDoubleMatrix2D matrix     =   new SparseDoubleMatrix2D(n, n);
         
-        List<Node> vertices   =  new ArrayList<>(g.getVertices());
+        List<Node> vertices             =  new ArrayList<>(g.getVertices());
+        SuicideIntentConfig config      =   SuicideIntentConfig.getConfig();
+        
         for(int row = 0; row < n; row++)
         {
             Node current    =   vertices.get(row);
@@ -40,10 +43,10 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
                 Node next   =   vertices.get(col);
                 
                 if(((SuicideInt) next).isDeleted())
-                    matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDeadWeight());
+                    matrix.set(row, col, config.getDeadWeight());
                 
                 else if(current.equals(perspective) && next.equals(perspective))
-                    matrix.set(row, col, SuicideIntentPlugin.CONFIG.getSelfWeight());
+                    matrix.set(row, col, config.getSelfWeight());
                 
                 else
                 {
@@ -51,9 +54,9 @@ public class SuicideGModelTransformer implements Transformer<Graph<Node, Edge>, 
                     {
                         Edge edge   =   g.findEdge(current, next);
                         if(g.getEdgeType(edge) == EdgeType.UNDIRECTED)
-                            matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDirectedWeight());
+                            matrix.set(row, col, config.getDirectedWeight());
                         else
-                            matrix.set(row, col, SuicideIntentPlugin.CONFIG.getDirectedWeight());
+                            matrix.set(row, col, config.getDirectedWeight());
                     }
                     
                     else matrix.set(row, col, 0);

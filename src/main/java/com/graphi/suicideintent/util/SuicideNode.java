@@ -8,6 +8,7 @@ public class SuicideNode extends Node implements SuicideInt
 {
     private boolean isDeleted;
     private double suicideIntent;
+    private int selfEvaluation;
     
     public SuicideNode(int id)
     {
@@ -51,12 +52,23 @@ public class SuicideNode extends Node implements SuicideInt
         this.suicideIntent  =   suicideIntent;
     }
     
+    public int getSelfEvaluation()
+    {
+        return selfEvaluation;
+    }
+    
+    public void setSelfEvaluation(int selfEvaluation)
+    {
+        this.selfEvaluation =   selfEvaluation;
+    }
+    
     @Override
     public Node copyGraphObject()
     {
         SuicideNode node    =    new SuicideNode(id, name);
         node.setDeleted(isDeleted);
         node.setSuicideIntent(suicideIntent);
+        node.setSelfEvaluation(selfEvaluation);
         
         return node;
     }

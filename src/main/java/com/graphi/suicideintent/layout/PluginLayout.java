@@ -10,8 +10,6 @@ import com.graphi.app.AppManager;
 import com.graphi.display.layout.MainPanel;
 import com.graphi.suicideintent.util.SuicideEdgeFactory;
 import com.graphi.suicideintent.util.SuicideNodeFactory;
-import java.awt.Dimension;
-import javax.swing.Box;
 import javax.swing.JScrollPane;
 
 public class PluginLayout extends MainPanel

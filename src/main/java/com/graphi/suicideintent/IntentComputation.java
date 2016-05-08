@@ -50,14 +50,16 @@ public class IntentComputation
         model.addColumn("Node ID");
         model.addColumn("Suicide intent");
         model.addColumn("State");
+        model.addColumn("Self Evaluation");
         
         for(Entry<Node, Double> scoreEntry : scores.entrySet())
         {
             int nodeID      =   scoreEntry.getKey().getID();
             double score    =   scoreEntry.getValue();
             String state    =   ((SuicideNode) scoreEntry.getKey()).isDeleted()? "DEAD" : "ALIVE";
+            int selfEval    =   ((SuicideNode) scoreEntry.getKey()).getSelfEvaluation();
             
-            model.addRow(new Object[] { nodeID, score, state });
+            model.addRow(new Object[] { nodeID, score, state, selfEval });
         }
         
         return model;
