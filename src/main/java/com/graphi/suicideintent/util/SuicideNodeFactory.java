@@ -1,13 +1,13 @@
 
 package com.graphi.suicideintent.util;
 
+import com.graphi.suicideintent.SuicideIntentConfig;
 import com.graphi.util.Node;
 import com.graphi.util.factory.NodeFactory;
 import java.util.Random;
 
 public class SuicideNodeFactory extends NodeFactory
 {
-    private int selfEval;
     private Random random;
     
     public SuicideNodeFactory()
@@ -28,6 +28,7 @@ public class SuicideNodeFactory extends NodeFactory
     @Override
     public Node create()
     {
+        int selfEval    =   SuicideIntentConfig.getConfig().getSelfWeight();
         if(selfEval == -1 && random == null) random = new Random();
         
         SuicideNode node   =   new SuicideNode(super.create());

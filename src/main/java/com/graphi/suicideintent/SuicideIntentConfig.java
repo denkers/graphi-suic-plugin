@@ -23,15 +23,15 @@ public class SuicideIntentConfig
     private static SuicideIntentConfig instance;
     private double directedWeight;
     private double undirectedWeight;
-    private double selfWeight;
+    private int selfWeight;
     private double deadWeight;
 
     public SuicideIntentConfig()
     {
-        this(1.0, 0.5, 2.0, 0.1);
+        this(1.0, 0.5, 2, 0.1);
     }
     
-    public SuicideIntentConfig(double directedWeight, double undirectedWeight, double selfWeight, double deadWeight)
+    public SuicideIntentConfig(double directedWeight, double undirectedWeight, int selfWeight, double deadWeight)
     {
         this.directedWeight     =   directedWeight;
         this.undirectedWeight   =   undirectedWeight;
@@ -49,7 +49,7 @@ public class SuicideIntentConfig
             Document configDoc          =   docBuilder.parse(configFile);
             double undirectedW          =   Double.parseDouble(configDoc.getElementsByTagName("directedWeight").item(0).getTextContent());
             double directedW            =   Double.parseDouble(configDoc.getElementsByTagName("undirectedWeight").item(0).getTextContent());
-            double selfW                =   Double.parseDouble(configDoc.getElementsByTagName("selfWeight").item(0).getTextContent());
+            int selfW                   =   Integer.parseInt(configDoc.getElementsByTagName("selfWeight").item(0).getTextContent());
             double deadWeight           =   Double.parseDouble(configDoc.getElementsByTagName("deadWeight").item(0).getTextContent());
             
             return new SuicideIntentConfig(directedW, undirectedW, selfW, deadWeight);
@@ -72,7 +72,7 @@ public class SuicideIntentConfig
         return undirectedWeight;
     }
 
-    public double getSelfWeight() 
+    public int getSelfWeight() 
     {
         return selfWeight;
     }
