@@ -1,8 +1,6 @@
 
 package com.graphi.suicideintent.layout;
 
-import com.graphi.display.layout.MainPanel;
-import com.graphi.display.layout.controls.ControlPanel;
 import com.graphi.display.layout.controls.TaskControlPanel;
 
 public class TaskPanel extends TaskControlPanel

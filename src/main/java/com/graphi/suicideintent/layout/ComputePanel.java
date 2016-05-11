@@ -80,11 +80,9 @@ public class ComputePanel extends JPanel implements ActionListener
         computeSwitchPanel.add(new JPanel(), COMPUTE_ALL_CARD);
         computeSwitchPanel.add(averageIntentPanel, COMPUTE_AVERAGE_CARD);
 
-      //  add(displaySizeCheck);
-       // add(displayColourCheck, "wrap");
-        add(new JLabel("Target options"));
+        add(new JLabel("Target options"), "al right");
         add(computeBox, "wrap");
-        add(computeSwitchPanel, "span 2, wrap");
+        add(computeSwitchPanel, "span 2, al center, wrap");
         add(resetButton, "al right");
         add(computeButton);
 
