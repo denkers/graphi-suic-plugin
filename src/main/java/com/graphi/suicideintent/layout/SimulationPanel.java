@@ -24,13 +24,14 @@ import net.miginfocom.swing.MigLayout;
 
 public class SimulationPanel extends JPanel implements ActionListener
 {
-    private final String RAND_DELETE_CARD   =   "Delete random";
-    private final String AUTO_DELETE_CARD   =   "Auto delete";
+    private final String RAND_DELETE_CARD       =   "Delete random";
+    private final String SPECIFIC_DELETE_CARD   =   "Delete target";
 
     private DeleteRandomSimPanel randomDeletePanel;
     private JComboBox simTypeBox;
     private JPanel simChangePanel;
     private SuicidePanel parentPanel;
+    private DeleteTargetPanel targetDeletePanel;
 
     public SimulationPanel(SuicidePanel parentPanel)
     {
@@ -38,11 +39,13 @@ public class SimulationPanel extends JPanel implements ActionListener
         this.parentPanel    =   parentPanel;
         simChangePanel      =   new JPanel(new CardLayout());
         randomDeletePanel   =   new DeleteRandomSimPanel();
+        targetDeletePanel   =   new DeleteTargetPanel();
         simTypeBox          =   new JComboBox();
 
         simChangePanel.add(randomDeletePanel, RAND_DELETE_CARD);
+        simChangePanel.add(targetDeletePanel, SPECIFIC_DELETE_CARD);
         simTypeBox.addItem(RAND_DELETE_CARD);
-        //simTypeBox.addItem(AUTO_DELETE_CARD);
+        simTypeBox.addItem(SPECIFIC_DELETE_CARD);
         simTypeBox.addActionListener(this);
 
         add(simTypeBox, "wrap, al center");
@@ -126,6 +129,46 @@ public class SimulationPanel extends JPanel implements ActionListener
 
             else if(src == clearButton)
                 clearDeadObjects();
+        }
+    }
+    
+    private class DeleteTargetPanel extends JPanel implements ActionListener
+    {
+        private JRadioButton specificRadio, selectedRadio;
+        private ButtonGroup targetBtnGroup;
+        private JSpinner targetField;
+        private JLabel targetLabel;
+        
+        public DeleteTargetPanel()
+        {
+            setLayout(new MigLayout("fillx"));
+            specificRadio   =   new JRadioButton("Specific");
+            selectedRadio   =   new JRadioButton("Selected");
+            targetBtnGroup  =   new ButtonGroup();
+            targetField     =   new JSpinner(new SpinnerNumberModel(1, 0, 10000, 1));
+            targetLabel     =   new JLabel("Node ID:");
+            
+            targetBtnGroup.add(specificRadio);
+            targetBtnGroup.add(selectedRadio);
+            add(specificRadio);
+            add(selectedRadio, "wrap");
+            add(targetLabel);
+            add(targetField);
+            
+            specificRadio.addActionListener(this);
+            selectedRadio.addActionListener(this);
+        }
+        
+        private void toggleTargetFields(boolean enable)
+        {
+            targetField.setEnabled(enable);
+            targetLabel.setEnabled(enable);
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) 
+        {
+            toggleTargetFields(specificRadio.isSelected());
         }
     }
 }
