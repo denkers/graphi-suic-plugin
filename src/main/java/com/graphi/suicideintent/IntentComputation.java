@@ -59,13 +59,13 @@ public class IntentComputation
         return normalizedEvalVector;
     }
     
-    public static DefaultTableModel getIntentTableModel(Map<Node, Double> scores)
+    public static DefaultTableModel getIntentTableModel(Map<Node, Double> scores, boolean average)
     {
         DefaultTableModel model     =   new DefaultTableModel();
         model.addColumn("Node ID");
-        model.addColumn("Suicide intent");
+        model.addColumn(average? "Suicide-Index" : "Self-Perception");
         model.addColumn("State");
-        model.addColumn("Self Evaluation");
+        model.addColumn("Self-Weight");
         
         for(Entry<Node, Double> scoreEntry : scores.entrySet())
         {
@@ -83,7 +83,7 @@ public class IntentComputation
     public static DefaultTableModel getSuicideIntent(GraphData gData, Node node, boolean computeAll)
     {
         Map<Node, Double> scores    =   computeEvalScores(gData, node, computeAll);
-        return getIntentTableModel(scores);
+        return getIntentTableModel(scores, false);
     }
     
     public static DefaultTableModel getAverageSuicideIntent(GraphPlayback playback, GraphData gData)
@@ -108,7 +108,7 @@ public class IntentComputation
             row++;
         }
         
-        return getIntentTableModel(scores);
+        return getIntentTableModel(scores, true);
     }
     
     public static Map<Node, Double> computeEvalScores(GraphData gData, Node node, boolean computeAll)

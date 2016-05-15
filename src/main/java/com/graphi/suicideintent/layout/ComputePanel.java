@@ -108,7 +108,7 @@ public class ComputePanel extends JPanel implements ActionListener
         Node perspective        =   gData.getNodes().get(perspectiveIndex);
 
         Map<Node, Double> scores    =   IntentComputation.computeEvalScores(gData, perspective, computeAll);
-        DefaultTableModel model     =   IntentComputation.getIntentTableModel(scores);
+        DefaultTableModel model     =   IntentComputation.getIntentTableModel(scores, false);
         parentPanel.getPluginLayout().getScreenPanel().getDataPanel().setComputationModel(model);
 
         String contextMessage   =   "Suicide intent for " + (computeAll? "all" : "node '" + perspectiveIndex + "'");
