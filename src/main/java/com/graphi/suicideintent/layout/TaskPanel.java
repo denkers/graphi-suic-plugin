@@ -36,14 +36,18 @@ public class TaskPanel extends TaskControlPanel
         else
         {
             SuicidePanel suicPanel  =   outer.getSuicidePanel();
+            int pluginIndex         =   getOptionsCount();
+            if(actionIndex == pluginIndex)
+                suicPanel.getComputePanel().computeSuicideIntent();
             
-            switch(actionIndex)
-            {
-                case 3: suicPanel.getComputePanel().computeSuicideIntent(); break;
-                case 4: suicPanel.getSimPanel().executeDelete(); break;
-                case 5: suicPanel.getSimPanel().clearDeadObjects(); break;
-                case 6: suicPanel.getComputePanel().computeAverageSuicideIntent(); break;
-            }
+            else if(actionIndex == pluginIndex + 1)
+                suicPanel.getSimPanel().executeDelete();
+            
+            else if(actionIndex == pluginIndex + 2)
+                suicPanel.getSimPanel().clearDeadObjects();
+            
+            else if(actionIndex == pluginIndex + 3)
+                suicPanel.getComputePanel().computeAverageSuicideIntent();
         }
     }
 }

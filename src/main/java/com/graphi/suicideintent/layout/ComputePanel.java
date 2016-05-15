@@ -119,8 +119,13 @@ public class ComputePanel extends JPanel implements ActionListener
     {
         GraphData gData         =   parentPanel.getPluginLayout().getGraphData();
         GraphPlayback playback  =   parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphPlayback();
+        if(playback.getEntries().isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "[Error] You must have atleast two recorded entries to perform this operation");
+            return;
+        }
+        
         DefaultTableModel model =   IntentComputation.getAverageSuicideIntent(playback, gData);
-
         if(model != null)
         {
             PlaybackEntry entryFirst    =   playback.getEntries().get(0);
