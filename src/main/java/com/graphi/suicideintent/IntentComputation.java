@@ -38,10 +38,25 @@ public class IntentComputation
         SparseDoubleMatrix2D matrix                 =   transformer.transform(neighbourhood);
         
         Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
-        SparseDoubleMatrix2D evalVector             =   MatrixTools.normalizeVector(evCombo.getValue(), evCombo.getKey());
+        SparseDoubleMatrix2D evalVector             =   normalizeEvalVector(evCombo.getValue(), evCombo.getKey());
         double evaluation                           =   Double.parseDouble(FORMATTER.format(evalVector.get(perspectiveIndex, 0)));
         
         return evaluation;
+    }
+    
+    private static SparseDoubleMatrix2D normalizeEvalVector(SparseDoubleMatrix2D vector, double largestEigenValue)
+    {
+        double length                               =   MatrixTools.getVectorLength(vector);
+        SparseDoubleMatrix2D normalizedEvalVector   =   new SparseDoubleMatrix2D(vector.rows(), 1);   
+        
+        for(int row = 0; row < vector.rows(); row++)
+        {
+            double entryVal =   vector.get(row, 0);
+            double val      =   (largestEigenValue * entryVal) / length;
+            normalizedEvalVector.setQuick(row, 0, val);
+        }
+        
+        return normalizedEvalVector;
     }
     
     public static DefaultTableModel getIntentTableModel(Map<Node, Double> scores)
