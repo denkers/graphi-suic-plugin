@@ -3,9 +3,11 @@ package com.graphi.suicideintent;
 import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
+import com.graphi.util.GraphObject;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 public class SuicideSimulation
@@ -28,13 +30,16 @@ public class SuicideSimulation
         }
     }
     
-    public static void killGraphObjects(Graph<Node, Edge> graph, double p, boolean killNodes)
+    public static void killGraphObjects(Graph<Node, Edge> graph, double p, boolean killNodes, List exceptionList)
     {
         Random rGen         =   new Random();
         Collection gObjs    =   killNodes? graph.getVertices() : graph.getEdges();
         
         for(Object gObj : gObjs)
         {
+            if(exceptionList.contains(((GraphObject) gObj).getID()))
+                continue;
+            
             double prob =   rGen.nextDouble();
             if(prob <= p)
             {

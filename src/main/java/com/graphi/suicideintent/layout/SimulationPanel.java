@@ -1,19 +1,24 @@
 
 package com.graphi.suicideintent.layout;
 
+import com.graphi.display.layout.AppResources;
+import com.graphi.display.layout.util.OptionsManagePanel;
 import com.graphi.suicideintent.SuicideSimulation;
 import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.picking.PickedState;
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -84,17 +89,22 @@ public class SimulationPanel extends JPanel implements ActionListener
     
     private void deleteRandomNodes()
     {
-        double p  =   (Double) deletePanel.randomPanel.probField.getValue();
-        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, true);
+        double p            =   (Double) deletePanel.randomPanel.probField.getValue();
+        List exceptionList  =   deletePanel.exceptionsPanel.getValues(0);
+        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, true, exceptionList);
     }
     
     private void deleteTargetNodes()
     {
+        List exceptionList  =   deletePanel.exceptionsPanel.getValues(0);
+        
         if(deletePanel.targetPanel.targetTypeBox.getSelectedIndex() == 0)
         {
-            Map<Integer, Node> nodes    =   parentPanel.getPluginLayout().getGraphData().getNodes();
-            int nodeID                  =   (int) deletePanel.targetPanel.targetField.getValue();
-            Node targetNode             =   nodes.get(nodeID);
+            int nodeID  =   (int) deletePanel.targetPanel.targetField.getValue();
+            if(exceptionList.contains(nodeID)) return;
+            
+            Map<Integer, Node> nodes   =   parentPanel.getPluginLayout().getGraphData().getNodes();
+            Node targetNode            =   nodes.get(nodeID);
             
             if(targetNode == null)
                 JOptionPane.showMessageDialog(null, "[Error] Invalid node ID");
@@ -108,7 +118,10 @@ public class SimulationPanel extends JPanel implements ActionListener
             Set<Node> pickedNodes               =   pickedNodeState.getPicked();
             
             for(Node node : pickedNodes)
-                ((SuicideNode) node).setDeleted(true);
+            {
+                if(!exceptionList.contains(node.getID()))
+                    ((SuicideNode) node).setDeleted(true);
+            }
         }
         
     }
@@ -119,11 +132,12 @@ public class SimulationPanel extends JPanel implements ActionListener
         private final String DELETE_TARGET_CARD     =   "delete_target";
         
         private ButtonGroup targetDeleteGroup;
-        private JButton executeButton, clearButton;
+        private JButton executeButton, clearButton, exceptionsButton;
         private JRadioButton targetRadio, randomRadio;
         private DeleteRandomPanel randomPanel;
         private DeleteTargetPanel targetPanel;
         private JPanel deleteCardPanel;
+        private ExceptionListPanel exceptionsPanel;
 
         public DeleteSimPanel()
         {
@@ -131,32 +145,39 @@ public class SimulationPanel extends JPanel implements ActionListener
             targetDeleteGroup   =   new ButtonGroup();
             targetRadio         =   new JRadioButton("Target");
             randomRadio         =   new JRadioButton("Random");
+            exceptionsButton    =   new JButton("Exceptions");
             executeButton       =   new JButton("Execute");
             clearButton         =   new JButton("Clear");
             deleteCardPanel     =   new JPanel(new CardLayout());
             targetPanel         =   new DeleteTargetPanel();
             randomPanel         =   new DeleteRandomPanel();
+            exceptionsPanel     =   new ExceptionListPanel();
 
             targetDeleteGroup.add(targetRadio);
             targetDeleteGroup.add(randomRadio);
-            randomRadio.setSelected(true);
+            targetRadio.setSelected(true);
             
-            deleteCardPanel.add(randomPanel, DELETE_RANDOM_CARD);
             deleteCardPanel.add(targetPanel, DELETE_TARGET_CARD);
+            deleteCardPanel.add(randomPanel, DELETE_RANDOM_CARD);
             
             JPanel controlWrapper   =   new JPanel();
+            controlWrapper.add(exceptionsButton);
             controlWrapper.add(clearButton);
             controlWrapper.add(executeButton);
+            
+            JPanel targetWrapper    =   new JPanel();
+            targetWrapper.add(randomRadio);
+            targetWrapper.add(targetRadio);
 
-            add(randomRadio, "");
-            add(targetRadio, "wrap");
-            add(deleteCardPanel, "al center, span 3, wrap");
-            add(controlWrapper, "al center, span 3");
+            add(targetWrapper, "al center, wrap");
+            add(deleteCardPanel, "al center, wrap");
+            add(controlWrapper, "al center");
 
             executeButton.addActionListener(this);
             clearButton.addActionListener(this);
             randomRadio.addActionListener(this);
             targetRadio.addActionListener(this);
+            exceptionsButton.addActionListener(this);
         }
         
         private void changeDeletePanel()
@@ -180,8 +201,12 @@ public class SimulationPanel extends JPanel implements ActionListener
             else if(src == clearButton)
                 clearDeadObjects();
             
-            else if(src == randomRadio || src == targetRadio);
+            else if(src == randomRadio || src == targetRadio)
                 changeDeletePanel();
+            
+            else if(src == exceptionsButton)
+                JOptionPane.showMessageDialog(null, exceptionsPanel, "Manage node exceptions", JOptionPane.INFORMATION_MESSAGE);
+                
         }
         
         private class DeleteRandomPanel extends JPanel
@@ -199,41 +224,74 @@ public class SimulationPanel extends JPanel implements ActionListener
                 add(probField);
             }
         }
-    }
-    
-    private class DeleteTargetPanel extends JPanel implements ActionListener
-    {
-        private JSpinner targetField;
-        private JLabel targetLabel;
-        private JComboBox targetTypeBox;
         
-        public DeleteTargetPanel()
+        private class DeleteTargetPanel extends JPanel implements ActionListener
         {
-            setLayout(new MigLayout("fillx"));
-            targetTypeBox   =   new JComboBox();
-            targetField     =   new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
-            targetLabel     =   new JLabel("Node ID");
-            
-            targetTypeBox.addItem("Specific");
-            targetTypeBox.addItem("Selected");
-            add(new JLabel("Target type"));
-            add(targetTypeBox, "wrap");
-            add(targetLabel);
-            add(targetField);
-            
-            targetTypeBox.addActionListener(this);
+            private JSpinner targetField;
+            private JLabel targetLabel;
+            private JComboBox targetTypeBox;
+
+            public DeleteTargetPanel()
+            {
+                setLayout(new MigLayout("fillx"));
+                targetTypeBox   =   new JComboBox();
+                targetField     =   new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
+                targetLabel     =   new JLabel("Node ID");
+
+                targetTypeBox.addItem("Specific");
+                targetTypeBox.addItem("Selected");
+                add(new JLabel("Target type"));
+                add(targetTypeBox, "wrap");
+                add(targetLabel);
+                add(targetField);
+
+                targetTypeBox.addActionListener(this);
+            }
+
+            private void toggleTargetFields(boolean enable)
+            {
+                targetField.setEnabled(enable);
+                targetLabel.setEnabled(enable);
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                toggleTargetFields(targetTypeBox.getSelectedIndex() == 0);
+            }
         }
         
-        private void toggleTargetFields(boolean enable)
+        private class ExceptionListPanel extends OptionsManagePanel implements ActionListener
         {
-            targetField.setEnabled(enable);
-            targetLabel.setEnabled(enable);
-        }
-        
-        @Override
-        public void actionPerformed(ActionEvent e) 
-        {
-            toggleTargetFields(targetTypeBox.getSelectedIndex() == 0);
+            private JButton addButton;
+            private JSpinner nodeIDField;
+            
+            public ExceptionListPanel()
+            {
+                addButton   =   new JButton("Add Exception");
+                nodeIDField =   new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
+                addButton.setIcon(new ImageIcon(AppResources.getInstance().getResource("addIcon")));
+                
+                JPanel controls =   new JPanel();
+                controls.add(new JLabel("Node ID"));
+                controls.add(nodeIDField);
+                controls.add(addButton);
+                
+                add(controls, BorderLayout.NORTH);
+                addButton.addActionListener(this);
+            }
+            
+            @Override
+            protected ImageIcon getItemIcon()
+            {
+                return new ImageIcon(AppResources.getInstance().getResource("stopIcon"));
+            }
+            
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                addOption(nodeIDField.getValue(), "");
+            }
         }
     }
 }
