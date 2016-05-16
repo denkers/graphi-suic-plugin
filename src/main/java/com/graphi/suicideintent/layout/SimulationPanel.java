@@ -167,30 +167,25 @@ public class SimulationPanel extends JPanel implements ActionListener
     
     private class DeleteTargetPanel extends JPanel implements ActionListener
     {
-        private JRadioButton specificRadio, selectedRadio;
-        private ButtonGroup targetBtnGroup;
         private JSpinner targetField;
         private JLabel targetLabel;
+        private JComboBox targetTypeBox;
         
         public DeleteTargetPanel()
         {
             setLayout(new MigLayout("fillx"));
-            specificRadio   =   new JRadioButton("Specific");
-            selectedRadio   =   new JRadioButton("Selected");
-            targetBtnGroup  =   new ButtonGroup();
-            targetField     =   new JSpinner(new SpinnerNumberModel(1, 0, 10000, 1));
-            targetLabel     =   new JLabel("Node ID:");
+            targetTypeBox   =   new JComboBox();
+            targetField     =   new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
+            targetLabel     =   new JLabel("Node ID");
             
-            targetBtnGroup.add(specificRadio);
-            targetBtnGroup.add(selectedRadio);
-            add(specificRadio);
-            add(selectedRadio, "wrap");
+            targetTypeBox.addItem("Specific");
+            targetTypeBox.addItem("Selected");
+            add(new JLabel("Target type"));
+            add(targetTypeBox, "wrap");
             add(targetLabel);
             add(targetField);
             
-            
-            specificRadio.addActionListener(this);
-            selectedRadio.addActionListener(this);
+            targetTypeBox.addActionListener(this);
         }
         
         private void toggleTargetFields(boolean enable)
@@ -202,7 +197,7 @@ public class SimulationPanel extends JPanel implements ActionListener
         @Override
         public void actionPerformed(ActionEvent e) 
         {
-            toggleTargetFields(specificRadio.isSelected());
+            toggleTargetFields(targetTypeBox.getSelectedIndex() == 0);
         }
     }
 }
