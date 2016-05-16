@@ -2,7 +2,6 @@
 package com.graphi.suicideintent.layout;
 
 import com.graphi.suicideintent.SuicideSimulation;
-import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
@@ -24,28 +23,23 @@ import net.miginfocom.swing.MigLayout;
 
 public class SimulationPanel extends JPanel implements ActionListener
 {
-    private final String RAND_DELETE_CARD       =   "Delete random";
-    private final String SPECIFIC_DELETE_CARD   =   "Delete target";
+    private final String DELETE_SIM_CARD       =   "Delete/Kill simulation";
 
-    private DeleteRandomSimPanel randomDeletePanel;
+    private DeleteSimPanel deletePanel;
     private JComboBox simTypeBox;
     private JPanel simChangePanel;
     private SuicidePanel parentPanel;
-    private DeleteTargetPanel targetDeletePanel;
 
     public SimulationPanel(SuicidePanel parentPanel)
     {
         setLayout(new MigLayout("fillx"));
         this.parentPanel    =   parentPanel;
         simChangePanel      =   new JPanel(new CardLayout());
-        randomDeletePanel   =   new DeleteRandomSimPanel();
-        targetDeletePanel   =   new DeleteTargetPanel();
+        deletePanel         =   new DeleteSimPanel();
         simTypeBox          =   new JComboBox();
 
-        simChangePanel.add(randomDeletePanel, RAND_DELETE_CARD);
-        simChangePanel.add(targetDeletePanel, SPECIFIC_DELETE_CARD);
-        simTypeBox.addItem(RAND_DELETE_CARD);
-        simTypeBox.addItem(SPECIFIC_DELETE_CARD);
+        simChangePanel.add(deletePanel, DELETE_SIM_CARD);
+        simTypeBox.addItem(DELETE_SIM_CARD);
         simTypeBox.addActionListener(this);
 
         add(simTypeBox, "wrap, al center");
@@ -72,52 +66,72 @@ public class SimulationPanel extends JPanel implements ActionListener
         for(Node node : graph.getVertices())
             ((SuicideNode) node).setDeleted(false);
 
-        for(Edge edge : graph.getEdges())
-            ((SuicideEdge) edge).setDeleted(false);
-
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
 
     public void executeDelete()
     {
-        double p            =   (Double) randomDeletePanel.probField.getValue();
-        boolean deleteNodes =   randomDeletePanel.nodeDeleteRadio.isSelected();
+        double p            =   (Double) deletePanel.randomPanel.probField.getValue();
 
-        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, deleteNodes);
+        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, true);
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
 
-    private class DeleteRandomSimPanel extends JPanel implements ActionListener
+    private class DeleteSimPanel extends JPanel implements ActionListener
     {
-        private JRadioButton edgeDeleteRadio, nodeDeleteRadio;
-        private ButtonGroup objDeleteGroup;
-        private JSpinner probField;
+        private final String DELETE_RANDOM_CARD     =   "delete_random";
+        private final String DELETE_TARGET_CARD     =   "delete_target";
+        
+        private ButtonGroup targetDeleteGroup;
         private JButton executeButton, clearButton;
+        private JRadioButton targetRadio, randomRadio;
+        private DeleteRandomPanel randomPanel;
+        private DeleteTargetPanel targetPanel;
+        private JPanel deleteCardPanel;
 
-        public DeleteRandomSimPanel()
+        public DeleteSimPanel()
         {
             setLayout(new MigLayout("fillx"));
-            edgeDeleteRadio =   new JRadioButton("Edges");
-            nodeDeleteRadio =   new JRadioButton("Nodes");
-            probField       =   new JSpinner(new SpinnerNumberModel(0.5, 0.0, 1.0, 0.1));
-            objDeleteGroup  =   new ButtonGroup();
-            executeButton   =   new JButton("Execute");
-            clearButton     =   new JButton("Clear");
+            targetDeleteGroup   =   new ButtonGroup();
+            targetRadio         =   new JRadioButton("Target");
+            randomRadio         =   new JRadioButton("Random");
+            executeButton       =   new JButton("Execute");
+            clearButton         =   new JButton("Clear");
+            deleteCardPanel     =   new JPanel(new CardLayout());
+            targetPanel         =   new DeleteTargetPanel();
+            randomPanel         =   new DeleteRandomPanel();
 
-            probField.setPreferredSize(new Dimension(50, 10));
-            objDeleteGroup.add(edgeDeleteRadio);
-            objDeleteGroup.add(nodeDeleteRadio);
-            nodeDeleteRadio.setSelected(true);
+            targetDeleteGroup.add(targetRadio);
+            targetDeleteGroup.add(randomRadio);
+            randomRadio.setSelected(true);
+            
+            deleteCardPanel.add(randomPanel, DELETE_RANDOM_CARD);
+            deleteCardPanel.add(targetPanel, DELETE_TARGET_CARD);
+            
+            JPanel controlWrapper   =   new JPanel();
+            controlWrapper.add(clearButton);
+            controlWrapper.add(executeButton);
 
-            add(nodeDeleteRadio, "al center");
-            add(edgeDeleteRadio, "wrap");
-            add(new JLabel("Probability"));
-            add(probField, "wrap");
-            add(clearButton);
-            add(executeButton);
+            add(randomRadio, "");
+            add(targetRadio, "wrap");
+            add(deleteCardPanel, "al center, span 3, wrap");
+            add(controlWrapper, "al center, span 3");
 
             executeButton.addActionListener(this);
             clearButton.addActionListener(this);
+            randomRadio.addActionListener(this);
+            targetRadio.addActionListener(this);
+        }
+        
+        private void changeDeletePanel()
+        {
+            CardLayout cLayout  =   (CardLayout) deleteCardPanel.getLayout();
+            String card;
+            
+            if(randomRadio.isSelected()) card   =   DELETE_RANDOM_CARD;
+            else card   =   DELETE_TARGET_CARD;    
+            
+            cLayout.show(deleteCardPanel, card);
         }
 
         @Override
@@ -129,6 +143,25 @@ public class SimulationPanel extends JPanel implements ActionListener
 
             else if(src == clearButton)
                 clearDeadObjects();
+            
+            else if(src == randomRadio || src == targetRadio);
+                changeDeletePanel();
+        }
+        
+        private class DeleteRandomPanel extends JPanel
+        {
+            private JSpinner probField;
+            private JLabel probLabel;
+            
+            public DeleteRandomPanel()
+            {
+                probField   =   new JSpinner(new SpinnerNumberModel(0.5, 0.0, 1.0, 0.1));
+                probLabel   =   new JLabel("Probability ");
+                probField.setPreferredSize(new Dimension(50, 25));
+                
+                add(probLabel);
+                add(probField);
+            }
         }
     }
     
@@ -154,6 +187,7 @@ public class SimulationPanel extends JPanel implements ActionListener
             add(selectedRadio, "wrap");
             add(targetLabel);
             add(targetField);
+            
             
             specificRadio.addActionListener(this);
             selectedRadio.addActionListener(this);
