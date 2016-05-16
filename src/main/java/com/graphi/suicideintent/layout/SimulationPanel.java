@@ -6,14 +6,18 @@ import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.visualization.picking.PickedState;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
+import java.util.Set;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -71,10 +75,42 @@ public class SimulationPanel extends JPanel implements ActionListener
 
     public void executeDelete()
     {
-        double p            =   (Double) deletePanel.randomPanel.probField.getValue();
-
-        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, true);
+        if(deletePanel.randomRadio.isSelected())
+            deleteRandomNodes();
+        else
+            deleteTargetNodes();
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
+    }
+    
+    private void deleteRandomNodes()
+    {
+        double p  =   (Double) deletePanel.randomPanel.probField.getValue();
+        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, true);
+    }
+    
+    private void deleteTargetNodes()
+    {
+        if(deletePanel.targetPanel.targetTypeBox.getSelectedIndex() == 0)
+        {
+            Map<Integer, Node> nodes    =   parentPanel.getPluginLayout().getGraphData().getNodes();
+            int nodeID                  =   (int) deletePanel.targetPanel.targetField.getValue();
+            Node targetNode             =   nodes.get(nodeID);
+            
+            if(targetNode == null)
+                JOptionPane.showMessageDialog(null, "[Error] Invalid node ID");
+            else
+                ((SuicideNode) targetNode).setDeleted(true);
+        }
+        
+        else
+        {
+            PickedState<Node> pickedNodeState   =   parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().getPickedVertexState();
+            Set<Node> pickedNodes               =   pickedNodeState.getPicked();
+            
+            for(Node node : pickedNodes)
+                ((SuicideNode) node).setDeleted(true);
+        }
+        
     }
 
     private class DeleteSimPanel extends JPanel implements ActionListener
