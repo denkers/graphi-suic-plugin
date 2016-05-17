@@ -22,12 +22,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 import java.util.Map;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
@@ -35,19 +37,20 @@ import net.miginfocom.swing.MigLayout;
 
 public class ComputePanel extends JPanel implements ActionListener
 {
-    private final String COMPUTE_SPECIFIC_CARD  =   "com_specific";
-    private final String COMPUTE_AVERAGE_CARD   =   "com_average";
-    private final String COMPUTE_ALL_CARD       =   "com_all";
+    private final String COMPUTE_PERCEPT_CARD   =   "com_perception";
+    private final String COMPUTE_INDEX_CARD     =   "com_index";
 
     private JCheckBox displaySizeCheck, displayColourCheck;
     private JComboBox computeBox;
     private JSpinner perspectiveSpinner;
     private JButton resetButton, computeButton;
-    private JPanel computeSpecificPanel;
+    private JPanel selfPercPanel;
     private JLabel dataSetsLabel;
     private JPanel averageIntentPanel;
     private JPanel computeSwitchPanel;
+    private JRadioButton targetSpecificRadio, targetAllRadio;
     private SuicidePanel parentPanel;
+    private JLabel perspectiveLabel;
 
     public ComputePanel(SuicidePanel parentPanel)
     {
@@ -62,11 +65,18 @@ public class ComputePanel extends JPanel implements ActionListener
         averageIntentPanel  =   new JPanel();
         dataSetsLabel       =   new JLabel();
         computeSwitchPanel  =   new JPanel(new CardLayout());
+        selfPercPanel       =   new JPanel(new MigLayout("fillx"));
+        targetSpecificRadio =   new JRadioButton("Specific");
+        targetAllRadio      =   new JRadioButton("All");
+        perspectiveLabel    =   new JLabel("Perspective ID");
+        
+        ButtonGroup targetBtnGroup  =   new ButtonGroup();
+        targetBtnGroup.add(targetSpecificRadio);
+        targetBtnGroup.add(targetAllRadio);
+        targetSpecificRadio.setSelected(true);
 
-
-        computeBox.addItem("Specific");
-        computeBox.addItem("All");
-        computeBox.addItem("Average");
+        computeBox.addItem("Self-Perception");
+        computeBox.addItem("Suicide-Index");
 
         Font titleFont          =   new Font("Arial", Font.BOLD, 12);
         JLabel perspectiveTitle =   new JLabel("PerspectiveID");
@@ -74,16 +84,16 @@ public class ComputePanel extends JPanel implements ActionListener
         perspectiveTitle.setFont(titleFont);
         dataCountTitle.setFont(titleFont);
 
-        computeSpecificPanel =   new JPanel();
-        computeSpecificPanel.add(new JLabel("Perspective ID"));
-        computeSpecificPanel.add(perspectiveSpinner);
+        selfPercPanel.add(targetSpecificRadio);
+        selfPercPanel.add(targetAllRadio, "wrap");
+        selfPercPanel.add(perspectiveLabel);
+        selfPercPanel.add(perspectiveSpinner);
 
         averageIntentPanel.add(dataCountTitle);
         averageIntentPanel.add(dataSetsLabel);
 
-        computeSwitchPanel.add(computeSpecificPanel, COMPUTE_SPECIFIC_CARD);
-        computeSwitchPanel.add(new JPanel(), COMPUTE_ALL_CARD);
-        computeSwitchPanel.add(averageIntentPanel, COMPUTE_AVERAGE_CARD);
+        computeSwitchPanel.add(selfPercPanel, COMPUTE_PERCEPT_CARD);
+        computeSwitchPanel.add(averageIntentPanel, COMPUTE_INDEX_CARD);
 
         add(new JLabel("Target options"), "al right");
         add(computeBox, "wrap");
@@ -94,6 +104,15 @@ public class ComputePanel extends JPanel implements ActionListener
         resetButton.addActionListener(this);
         computeButton.addActionListener(this);    
         computeBox.addActionListener(this);
+        targetAllRadio.addActionListener(this);
+        targetSpecificRadio.addActionListener(this);
+    }
+    
+    private void togglePerceptionOptions()
+    {
+        boolean enable  =   targetSpecificRadio.isSelected();
+        perspectiveSpinner.setEnabled(enable);
+        perspectiveLabel.setEnabled(enable);
     }
 
     private void computeExecute()
@@ -157,9 +176,8 @@ public class ComputePanel extends JPanel implements ActionListener
 
         switch(selectedOption)
         {
-            case 0: cardName    =   COMPUTE_SPECIFIC_CARD; break;
-            case 1: cardName    =   COMPUTE_ALL_CARD; break;
-            case 2: cardName    =   COMPUTE_AVERAGE_CARD; updateDataSetCount(); break;
+            case 0: cardName    =   COMPUTE_PERCEPT_CARD; break;
+            case 1: cardName    =   COMPUTE_INDEX_CARD; updateDataSetCount(); break;
             default: return;
         }
 
@@ -216,5 +234,8 @@ public class ComputePanel extends JPanel implements ActionListener
 
         else if(src == computeButton)
             computeExecute();
+        
+        else if(src == targetSpecificRadio || src == targetAllRadio)
+            togglePerceptionOptions();
     }
 }
