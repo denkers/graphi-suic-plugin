@@ -37,20 +37,20 @@ public class TaskPanel extends TaskControlPanel
     @Override
     protected void handleAction(int actionIndex) 
     {
-        if(actionIndex < 3) super.handleAction(actionIndex);
+        SuicidePanel suicPanel  =   outer.getSuicidePanel();
+        int pluginIndex         =   getOptionsCount();
+        if(actionIndex < pluginIndex) super.handleAction(actionIndex);
         else
         {
-            SuicidePanel suicPanel  =   outer.getSuicidePanel();
-            int pluginIndex         =   getOptionsCount();
             if(actionIndex == pluginIndex)
                 suicPanel.getComputePanel().computeSuicideIntent();
-            
+
             else if(actionIndex == pluginIndex + 1)
                 suicPanel.getSimPanel().executeDelete();
-            
+
             else if(actionIndex == pluginIndex + 2)
                 suicPanel.getSimPanel().clearDeadObjects();
-            
+
             else if(actionIndex == pluginIndex + 3)
                 suicPanel.getComputePanel().computeAverageSuicideIntent();
         }
