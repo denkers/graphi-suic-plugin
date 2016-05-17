@@ -1,7 +1,12 @@
+///================================================
+//  Kyle Russell
+//  AUT University 2015
+//  https://github.com/denkers/graphi-suic-plugin
+//================================================
+
 package com.graphi.suicideintent.layout;
 
 import com.graphi.suicideintent.SuicideIntentConfig;
-import com.graphi.suicideintent.SuicideIntentPlugin;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

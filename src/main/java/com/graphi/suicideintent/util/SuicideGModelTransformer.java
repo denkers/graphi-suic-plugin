@@ -8,7 +8,6 @@ package com.graphi.suicideintent.util;
 
 import cern.colt.matrix.impl.SparseDoubleMatrix2D;
 import com.graphi.suicideintent.SuicideIntentConfig;
-import com.graphi.suicideintent.SuicideIntentPlugin;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
