@@ -117,7 +117,7 @@ public class ComputePanel extends JPanel implements ActionListener
 
     private void computeExecute()
     {
-        if(computeBox.getSelectedIndex() == 2)
+        if(computeBox.getSelectedIndex() == 1)
             computeAverageSuicideIntent();
 
         else
@@ -126,7 +126,7 @@ public class ComputePanel extends JPanel implements ActionListener
 
     public void computeSuicideIntent()
     {
-        boolean computeAll      =   computeBox.getSelectedIndex() == 1;
+        boolean computeAll      =   targetAllRadio.isSelected();
         int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
         GraphData gData         =   parentPanel.getPluginLayout().getGraphData();
         Node perspective        =   gData.getNodes().get(perspectiveIndex);
@@ -135,7 +135,7 @@ public class ComputePanel extends JPanel implements ActionListener
         DefaultTableModel model     =   IntentComputation.getIntentTableModel(scores, false);
         parentPanel.getPluginLayout().getScreenPanel().getDataPanel().setComputationModel(model);
 
-        String contextMessage   =   "Suicide intent for " + (computeAll? "all" : "node '" + perspectiveIndex + "'");
+        String contextMessage   =   "Self perception for " + (computeAll? "all" : "node '" + perspectiveIndex + "'");
         parentPanel.getPluginLayout().getScreenPanel().getDataPanel().setComputationContext(contextMessage);
     }
 
@@ -156,7 +156,7 @@ public class ComputePanel extends JPanel implements ActionListener
             PlaybackEntry entryLast     =   playback.getEntries().get(playback.getSize() - 1);
 
             parentPanel.getPluginLayout().getScreenPanel().getDataPanel().setComputationModel(model);
-            parentPanel.getPluginLayout().getScreenPanel().getDataPanel().setComputationContext("Average suicide intent from entries: " + 
+            parentPanel.getPluginLayout().getScreenPanel().getDataPanel().setComputationContext("Suicide-index for entries: " + 
                                                         entryFirst.getName() + " - " + entryLast.getName());
         }
 
