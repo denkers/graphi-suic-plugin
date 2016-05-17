@@ -9,6 +9,7 @@ package com.graphi.suicideintent.layout;
 import com.graphi.display.layout.AppResources;
 import com.graphi.display.layout.util.OptionsManagePanel;
 import com.graphi.suicideintent.SuicideSimulation;
+import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
 import com.graphi.util.Node;
@@ -79,6 +80,9 @@ public class SimulationPanel extends JPanel implements ActionListener
         Graph<Node, Edge> graph =   parentPanel.getPluginLayout().getData().getGraph();
         for(Node node : graph.getVertices())
             ((SuicideNode) node).setDeleted(false);
+        
+        for(Edge edge : graph.getEdges())
+            ((SuicideEdge) edge).setDeleted(false);
 
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
