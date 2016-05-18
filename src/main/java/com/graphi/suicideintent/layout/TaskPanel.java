@@ -15,7 +15,8 @@ public class TaskPanel extends TaskControlPanel
         "Suicide computation", 
         "Suicide simulation",
         "Reset suicide simulation",
-        "Average suicide computation"
+        "Average suicide computation",
+        "Killing simulation v2"
     };
     
     private SuicideControlPanel outer;
@@ -53,6 +54,9 @@ public class TaskPanel extends TaskControlPanel
 
             else if(actionIndex == pluginIndex + 3)
                 suicPanel.getComputePanel().computeAverageSuicideIntent();
+            
+            else if(actionIndex == pluginIndex + 4)
+                suicPanel.getSimPanel().excecuteKillingDifussion();
         }
     }
 }

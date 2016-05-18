@@ -8,6 +8,7 @@ package com.graphi.suicideintent.layout;
 
 import com.graphi.display.layout.AppResources;
 import com.graphi.display.layout.util.OptionsManagePanel;
+import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.SuicideSimulation;
 import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideNode;
@@ -96,12 +97,22 @@ public class SimulationPanel extends JPanel implements ActionListener
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
     
+    public void excecuteKillingDifussion()
+    {
+        List exceptionList          =   deletePanel.exceptionsPanel.getValues(0);
+        List<PlaybackEntry> entries =   parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphPlayback().getEntries();
+        Graph<Node, Edge> graph     =   parentPanel.getPluginLayout().getGraphData().getGraph();
+        
+        SuicideSimulation.diffuseKillNodes(graph, exceptionList, entries);
+    }
+    
     private void deleteRandomNodes()
     {
         double p            =   (Double) deletePanel.randomPanel.probField.getValue();
         List exceptionList  =   deletePanel.exceptionsPanel.getValues(0);
-        SuicideSimulation.killGraphObjects(parentPanel.getPluginLayout().getGraphData().getGraph(), p, true, exceptionList);
+        SuicideSimulation.killNodes(parentPanel.getPluginLayout().getGraphData().getGraph(), p, exceptionList);
     }
+    
     
     private void deleteTargetNodes()
     {

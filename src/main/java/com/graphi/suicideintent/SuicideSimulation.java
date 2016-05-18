@@ -17,6 +17,7 @@ import edu.uci.ics.jung.graph.Graph;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class SuicideSimulation
@@ -58,7 +59,10 @@ public class SuicideSimulation
     public static void diffuseKillNodes(Graph<Node, Edge> graph, List exceptionList, List<PlaybackEntry> entries)
     {
         if(entries == null || entries.isEmpty())
+        {
+            JOptionPane.showMessageDialog(null, "[Error] You must have atleast one entry");
             return;
+        }
         
         Random rGen                 =   new Random();
         Collection<Node> nodes      =   graph.getVertices();
@@ -90,27 +94,5 @@ public class SuicideSimulation
 
         for(Edge edge : indEdges)
             ((SuicideEdge) edge).setDeleted(true);
-    }
-    
-    public static void diffKillNodes(Graph<Node, Edge> graph, List<PlaybackEntry> entries, double pThreshold, List exceptionList)
-    {
-        Random rGen         =   new Random();
-        
-        for(Node node : graph.getVertices())
-        {
-            if(exceptionList.contains(node))
-                continue;
-            
-            SuicideNode suicNode    =   (SuicideNode) node;
-            if(!suicNode.isDeleted())
-            {
-                double suicIntent   =   suicNode.getSuicideIntent();
-                double prob         =   suicIntent > pThreshold? suicIntent : pThreshold;
-                double p            =   rGen.nextDouble();
-                
-                if(p <= prob) suicNode.setDeleted(true);
-                
-            }
-        }
     }
 }
