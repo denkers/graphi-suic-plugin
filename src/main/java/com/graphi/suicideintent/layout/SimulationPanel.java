@@ -36,7 +36,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import net.miginfocom.swing.MigLayout;
 
-
 public class SimulationPanel extends JPanel implements ActionListener
 {
     private final String DELETE_SIM_CARD       =   "Delete/Kill simulation";
@@ -94,6 +93,7 @@ public class SimulationPanel extends JPanel implements ActionListener
             deleteRandomNodes();
         else
             deleteTargetNodes();
+        
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
     
@@ -104,6 +104,7 @@ public class SimulationPanel extends JPanel implements ActionListener
         Graph<Node, Edge> graph     =   parentPanel.getPluginLayout().getGraphData().getGraph();
         
         SuicideSimulation.diffuseKillNodes(graph, exceptionList, entries);
+        parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
     
     private void deleteRandomNodes()

@@ -10,8 +10,6 @@ import com.graphi.sim.PlaybackEntry;
 import com.graphi.suicideintent.util.SuicideEdge;
 import com.graphi.suicideintent.util.SuicideNode;
 import com.graphi.util.Edge;
-import com.graphi.util.GraphData;
-import com.graphi.util.GraphObject;
 import com.graphi.util.Node;
 import edu.uci.ics.jung.graph.Graph;
 import java.util.Collection;
@@ -60,22 +58,22 @@ public class SuicideSimulation
     {
         if(entries == null || entries.isEmpty())
         {
-            JOptionPane.showMessageDialog(null, "[Error] You must have atleast one entry");
+            JOptionPane.showMessageDialog(null, "[Error] You must have atleast two entries");
             return;
         }
         
         Random rGen                 =   new Random();
         Collection<Node> nodes      =   graph.getVertices();
         DefaultTableModel latest    =   entries.get(entries.size() - 1).getComputationModel().getModel();
-        DefaultTableModel prev      =   entries.size() == 1? null : entries.get(entries.size() - 2).getComputationModel().getModel();
+        DefaultTableModel prev      =   entries.get(entries.size() - 2).getComputationModel().getModel();
         int entryRow                =   0;
         
         for(Node node : nodes)
         {
-            if(!exceptionList.contains(node))
+            if(!exceptionList.contains(node) && !((SuicideNode) node).isDeleted())
             {
                 double scoreLatest  =   (double) latest.getValueAt(entryRow, 1);
-                double scorePrev    =   prev == null? 1.0 : (double) prev.getValueAt(entryRow, 1);
+                double scorePrev    =   (double) prev.getValueAt(entryRow, 1);
                 double drop         =   1 - (scoreLatest / scorePrev);
                 double p            =   rGen.nextDouble();
                 
