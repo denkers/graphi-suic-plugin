@@ -54,7 +54,7 @@ public class SuicideSimulation
         }
     }
     
-    public static void diffuseKillNodes(Graph<Node, Edge> graph, List exceptionList, List<PlaybackEntry> entries)
+    public static void diffuseKillNodes(Graph<Node, Edge> graph, List exceptionList, List<PlaybackEntry> entries, boolean startEntry)
     {
         if(entries == null || entries.isEmpty())
         {
@@ -65,7 +65,7 @@ public class SuicideSimulation
         Random rGen                 =   new Random();
         Collection<Node> nodes      =   graph.getVertices();
         DefaultTableModel latest    =   entries.get(entries.size() - 1).getComputationModel().getModel();
-        DefaultTableModel prev      =   entries.get(entries.size() - 2).getComputationModel().getModel();
+        DefaultTableModel prev      =   entries.get(startEntry? 0 : entries.size() - 2).getComputationModel().getModel();
         int entryRow                =   0;
         
         for(Node node : nodes)

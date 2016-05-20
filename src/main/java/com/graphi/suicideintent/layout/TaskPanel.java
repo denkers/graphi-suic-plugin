@@ -13,10 +13,11 @@ public class TaskPanel extends TaskControlPanel
     protected String[] SUIC_OPTIONS    =   
     { 
         "Suicide computation", 
-        "Suicide simulation",
+        "Suicide/Disaster sim (random)",
         "Reset suicide simulation",
         "Average suicide computation",
-        "Killing simulation v2"
+        "Suicide sim (Random)",
+        "Killing sim (Accumulated-Drop)"
     };
     
     private SuicideControlPanel outer;
@@ -56,7 +57,10 @@ public class TaskPanel extends TaskControlPanel
                 suicPanel.getComputePanel().computeAverageSuicideIntent();
             
             else if(actionIndex == pluginIndex + 4)
-                suicPanel.getSimPanel().excecuteKillingDifussion();
+                suicPanel.getSimPanel().excecuteKillingDifussion(true);
+            
+             else if(actionIndex == pluginIndex + 5)
+                suicPanel.getSimPanel().excecuteKillingDifussion(false);
         }
     }
 }

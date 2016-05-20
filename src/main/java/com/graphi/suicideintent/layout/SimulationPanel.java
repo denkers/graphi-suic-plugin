@@ -97,13 +97,13 @@ public class SimulationPanel extends JPanel implements ActionListener
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
     
-    public void excecuteKillingDifussion()
+    public void excecuteKillingDifussion(boolean useRandomModel)
     {
         List exceptionList          =   deletePanel.exceptionsPanel.getValues(0);
         List<PlaybackEntry> entries =   parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphPlayback().getEntries();
         Graph<Node, Edge> graph     =   parentPanel.getPluginLayout().getGraphData().getGraph();
         
-        SuicideSimulation.diffuseKillNodes(graph, exceptionList, entries);
+        SuicideSimulation.diffuseKillNodes(graph, exceptionList, entries, !useRandomModel);
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
     
