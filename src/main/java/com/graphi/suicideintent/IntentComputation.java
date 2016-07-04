@@ -38,7 +38,7 @@ public class IntentComputation
         SparseDoubleMatrix2D matrix                 =   transformer.transform(neighbourhood);
         
         Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
-        SparseDoubleMatrix2D evalVector             =   normalizeEvalVector(evCombo.getValue(), evCombo.getKey());
+        SparseDoubleMatrix2D evalVector             =   MatrixTools.manhattenNormalizeVector(evCombo.getValue(), evCombo.getKey());
         double evaluation                           =   Double.parseDouble(FORMATTER.format(evalVector.get(perspectiveIndex, 0)));
         
         return evaluation;
@@ -69,10 +69,10 @@ public class IntentComputation
         
         for(Entry<Node, Double> scoreEntry : scores.entrySet())
         {
-            int nodeID      =   scoreEntry.getKey().getID();
-            double score    =   scoreEntry.getValue();
-            String state    =   ((SuicideNode) scoreEntry.getKey()).isDeleted()? "DEAD" : "ALIVE";
-            int selfEval    =   ((SuicideNode) scoreEntry.getKey()).getSelfEvaluation();
+            int nodeID          =   scoreEntry.getKey().getID();
+            double score        =   scoreEntry.getValue();
+            String state        =   ((SuicideNode) scoreEntry.getKey()).isDeleted()? "DEAD" : "ALIVE";
+            double selfEval     =   ((SuicideNode) scoreEntry.getKey()).getSelfEvaluation();
             
             model.addRow(new Object[] { nodeID, score, state, selfEval });
         }

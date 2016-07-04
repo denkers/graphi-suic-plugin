@@ -5,7 +5,7 @@
 	<!-- Weight of weak ties -->
 	<undirectedWeight>0.5</undirectedWeight>
 
-	<!-- Weight of self evaltion (use -1 for random in range [0, 10] -->
+	<!-- Weight of self evaltion (use -1 for random in range [0, 1] -->
 	<selfWeight>-1</selfWeight>
 
 	<!-- Weight of awareness (someone killed/used to be there) -->

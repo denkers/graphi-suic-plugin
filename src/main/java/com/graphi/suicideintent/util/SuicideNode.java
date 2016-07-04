@@ -13,7 +13,7 @@ public class SuicideNode extends Node implements SuicideInt
 {
     private boolean isDeleted;
     private double suicideIntent;
-    private int selfEvaluation;
+    private double selfEvaluation;
     
     public SuicideNode(int id)
     {
@@ -57,12 +57,12 @@ public class SuicideNode extends Node implements SuicideInt
         this.suicideIntent  =   suicideIntent;
     }
     
-    public int getSelfEvaluation()
+    public double getSelfEvaluation()
     {
         return selfEvaluation;
     }
     
-    public void setSelfEvaluation(int selfEvaluation)
+    public void setSelfEvaluation(double selfEvaluation)
     {
         this.selfEvaluation =   selfEvaluation;
     }

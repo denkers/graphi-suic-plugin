@@ -41,7 +41,7 @@ public class SuicideNodeFactory extends NodeFactory
         if(selfEval != -1)
             node.setSelfEvaluation(selfEval);
         else
-            node.setSelfEvaluation(random.nextInt(10));
+            node.setSelfEvaluation(random.nextDouble());
         
         return node;
     }
