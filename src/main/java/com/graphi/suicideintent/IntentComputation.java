@@ -38,10 +38,27 @@ public class IntentComputation
         SparseDoubleMatrix2D matrix                 =   transformer.transform(neighbourhood);
         
         Entry<Double, SparseDoubleMatrix2D> evCombo =   MatrixTools.powerIteration(matrix);
-        SparseDoubleMatrix2D evalVector             =   MatrixTools.manhattenNormalizeVector(evCombo.getValue(), evCombo.getKey());
+        SparseDoubleMatrix2D evalVector             =   manhattenNormalizeVector(evCombo.getValue(), evCombo.getKey());
         double evaluation                           =   Double.parseDouble(FORMATTER.format(evalVector.get(perspectiveIndex, 0)));
         
         return evaluation;
+    }
+    
+    public static SparseDoubleMatrix2D manhattenNormalizeVector(SparseDoubleMatrix2D eVector, double eValue)
+    {
+        double len  =   0.0;
+        SparseDoubleMatrix2D normalizedVector   =   new SparseDoubleMatrix2D(eVector.rows(), 1);
+        
+        for(int i = 0; i < eVector.rows(); i++)
+            len += eVector.get(i, 0);
+        
+        for(int i = 0; i < eVector.rows(); i++)
+        {
+            double val  =   (eValue * eVector.get(i, 0)) / len;
+            normalizedVector.set(i, 0, val);
+        }
+        
+        return normalizedVector;
     }
     
     private static SparseDoubleMatrix2D normalizeEvalVector(SparseDoubleMatrix2D vector, double largestEigenValue)
