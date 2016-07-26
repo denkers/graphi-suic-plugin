@@ -299,6 +299,8 @@ public class SimulationPanel extends JPanel implements ActionListener
                 controls.add(addButton);
                 
                 add(controls, BorderLayout.NORTH);
+                attachTable();
+                
                 addButton.addActionListener(this);
             }
             

@@ -121,13 +121,18 @@ public class ComputePanel extends JPanel implements ActionListener
             computeAverageSuicideIntent();
 
         else
-            computeSuicideIntent();
+            computeSuicideIntentDefault();
     }
-
-    public void computeSuicideIntent()
+    
+    public void computeSuicideIntentDefault()
     {
         boolean computeAll      =   targetAllRadio.isSelected();
         int perspectiveIndex    =   computeAll? -1 : (int) perspectiveSpinner.getValue();
+        computeSuicideIntent(computeAll, perspectiveIndex);
+    }
+
+    public void computeSuicideIntent(boolean computeAll, int perspectiveIndex)
+    {
         GraphData gData         =   parentPanel.getPluginLayout().getGraphData();
         Node perspective        =   gData.getNodes().get(perspectiveIndex);
 
