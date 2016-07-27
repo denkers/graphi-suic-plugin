@@ -4,7 +4,7 @@
 //  https://github.com/denkers/graphi-suic-plugin
 //================================================
 
-package com.graphi.suicideintent.layout;
+package com.graphi.suicideintent.tasks;
 
 import com.graphi.tasks.AbstractTask;
 
@@ -26,7 +26,7 @@ public class SelfEvalTask extends AbstractTask
     @Override
     public void performTask()
     {
-        boolean computeAll  =   ((String) properties.get("Compute all")).equalsIgnoreCase("true");
-        //int perspectiveID   =   Integer.parseInt(properties.get("Perspective ID"));
+        boolean computeAll  =   properties.get("Compute all").equalsIgnoreCase("true");
+        int perspectiveID   =   Integer.parseInt(properties.get("Perspective ID"));
     }
 }

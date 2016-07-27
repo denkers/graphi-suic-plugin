@@ -14,7 +14,6 @@ import javax.swing.JScrollPane;
 
 public class PluginLayout extends MainPanel
 {
-    
     public PluginLayout(AppManager appManager) 
     {
         super(appManager);
