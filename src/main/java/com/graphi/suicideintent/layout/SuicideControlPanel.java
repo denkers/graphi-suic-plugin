@@ -36,4 +36,9 @@ public class SuicideControlPanel extends ControlPanel
     {
         return suicidePanel;
     }
+    
+    public static SuicidePanel getSuicidePanelInstance()
+    {
+        return ((SuicideControlPanel) PluginLayout.getInstance().getControlPanel()).getSuicidePanel();
+    }
 }

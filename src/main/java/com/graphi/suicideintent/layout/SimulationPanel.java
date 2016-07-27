@@ -96,10 +96,15 @@ public class SimulationPanel extends JPanel implements ActionListener
     public void executeDelete(boolean deleteRandom)
     {
         if(deleteRandom)
-            deleteRandomNodes();
+            deleteRandomNodesDefault();
         else
             deleteTargetNodes();
         
+        repaintViewer();
+    }
+    
+    public void repaintViewer()
+    {
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
     
@@ -110,18 +115,22 @@ public class SimulationPanel extends JPanel implements ActionListener
         Graph<Node, Edge> graph     =   parentPanel.getPluginLayout().getGraphData().getGraph();
         
         SuicideSimulation.diffuseKillNodes(graph, exceptionList, entries, !useRandomModel);
-        parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
+        repaintViewer();
     }
     
-    private void deleteRandomNodes()
+    public void deleteRandomNodesDefault()
     {
-        double p            =   (Double) deletePanel.randomPanel.probField.getValue();
+        double p   =   (Double) deletePanel.randomPanel.probField.getValue();
+        deleteRandomNodes(p);
+    }
+    
+    public void deleteRandomNodes(double p)
+    {
         List exceptionList  =   deletePanel.exceptionsPanel.getValues(0);
         SuicideSimulation.killNodes(parentPanel.getPluginLayout().getGraphData().getGraph(), p, exceptionList);
     }
     
-    
-    private void deleteTargetNodes()
+    public void deleteTargetNodes()
     {
         List exceptionList  =   deletePanel.exceptionsPanel.getValues(0);
         
@@ -223,7 +232,7 @@ public class SimulationPanel extends JPanel implements ActionListener
         {
             Object src  =   e.getSource();
             if(src == executeButton)
-                executeDelete();
+                executeDeleteDefault();
 
             else if(src == clearButton)
                 clearDeadObjects();

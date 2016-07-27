@@ -29,4 +29,9 @@ public class PluginLayout extends MainPanel
         controlPanel    =   new SuicideControlPanel(this);
         controlScroll   =   new JScrollPane(controlPanel);
     }
+    
+    public static PluginLayout getInstance()
+    {
+        return (PluginLayout) AppManager.getInstance().getPluginManager().getActivePlugin().getPanel();
+    }
 }
