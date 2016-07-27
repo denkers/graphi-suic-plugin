@@ -87,9 +87,15 @@ public class SimulationPanel extends JPanel implements ActionListener
         parentPanel.getPluginLayout().getScreenPanel().getGraphPanel().getGraphViewer().repaint();
     }
 
-    public void executeDelete()
+    public void executeDeleteDefault()
     {
-        if(deletePanel.randomRadio.isSelected())
+        boolean deleteRandom    =   deletePanel.randomRadio.isSelected();
+        executeDelete(deleteRandom);
+    }
+    
+    public void executeDelete(boolean deleteRandom)
+    {
+        if(deleteRandom)
             deleteRandomNodes();
         else
             deleteTargetNodes();
