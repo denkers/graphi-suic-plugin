@@ -7,6 +7,12 @@
 package com.graphi.suicideintent.layout;
 
 import com.graphi.display.layout.controls.ControlPanel;
+import com.graphi.suicideintent.tasks.ClearDeleteTask;
+import com.graphi.suicideintent.tasks.DiffKillTask;
+import com.graphi.suicideintent.tasks.SelfEvalTask;
+import com.graphi.suicideintent.tasks.SuicDeleteTask;
+import com.graphi.suicideintent.tasks.SuicIndexTask;
+import com.graphi.tasks.TaskManager;
 import java.awt.Dimension;
 import javax.swing.Box;
 
@@ -34,7 +40,12 @@ public class SuicideControlPanel extends ControlPanel
     
     private void initTasks()
     {
-        
+        TaskManager tm  =   TaskManager.getInstance();
+        tm.registerTask(new ClearDeleteTask());
+        tm.registerTask(new DiffKillTask());
+        tm.registerTask(new SelfEvalTask());
+        tm.registerTask(new SuicDeleteTask());
+        tm.registerTask(new SuicIndexTask());
     }
     
     public SuicidePanel getSuicidePanel()
