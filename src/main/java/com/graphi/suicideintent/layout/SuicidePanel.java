@@ -21,7 +21,6 @@ public class SuicidePanel extends JPanel
     private SimulationPanel simPanel;
     private ConfigPanel configPanel;
     private ComputePanel computePanel;
-    private TaskPanel taskPanel;
     private JTabbedPane controlsTabPane;
     
     public SuicidePanel(PluginLayout parentPanel)
@@ -70,12 +69,4 @@ public class SuicidePanel extends JPanel
     {
         return computePanel;
     }
-
-    public TaskPanel getTaskPanel() 
-    {
-        return taskPanel;
-    }
-    
-    
-    
 }

@@ -28,8 +28,13 @@ public class SuicideControlPanel extends ControlPanel
     @Override
     protected void initControls()
     {
+        initTasks();
         super.initControls();
-        taskPanel   =   new TaskPanel(this);
+    }
+    
+    private void initTasks()
+    {
+        
     }
     
     public SuicidePanel getSuicidePanel()
