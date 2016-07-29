@@ -32,7 +32,7 @@ public class SuicDeleteTask extends AbstractTask
     public void performTask() 
     {
         SimulationPanel panel   =   SuicideControlPanel.getSuicidePanelInstance().getSimPanel();
-        boolean deleteRandom    =   properties.get("Delete Random").equalsIgnoreCase("true");
+        boolean deleteRandom    =   properties.get("Delete random").equalsIgnoreCase("true");
         double deleteProb       =   Double.parseDouble(properties.get("Delete probability"));
         
         if(deleteRandom)

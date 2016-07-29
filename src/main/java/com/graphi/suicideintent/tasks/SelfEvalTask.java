@@ -6,6 +6,7 @@
 
 package com.graphi.suicideintent.tasks;
 
+import com.graphi.suicideintent.layout.SuicideControlPanel;
 import com.graphi.tasks.AbstractTask;
 
 public class SelfEvalTask extends AbstractTask
@@ -28,5 +29,7 @@ public class SelfEvalTask extends AbstractTask
     {
         boolean computeAll  =   properties.get("Compute all").equalsIgnoreCase("true");
         int perspectiveID   =   Integer.parseInt(properties.get("Perspective ID"));
+        SuicideControlPanel.getSuicidePanelInstance().getComputePanel()
+                .computeSuicideIntent(computeAll, perspectiveID);
     }
 }

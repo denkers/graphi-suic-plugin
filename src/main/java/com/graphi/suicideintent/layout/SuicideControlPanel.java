@@ -34,18 +34,7 @@ public class SuicideControlPanel extends ControlPanel
     @Override
     protected void initControls()
     {
-        initTasks();
         super.initControls();
-    }
-    
-    private void initTasks()
-    {
-        TaskManager tm  =   TaskManager.getInstance();
-        tm.registerTask(new ClearDeleteTask());
-        tm.registerTask(new DiffKillTask());
-        tm.registerTask(new SelfEvalTask());
-        tm.registerTask(new SuicDeleteTask());
-        tm.registerTask(new SuicIndexTask());
     }
     
     public SuicidePanel getSuicidePanel()
