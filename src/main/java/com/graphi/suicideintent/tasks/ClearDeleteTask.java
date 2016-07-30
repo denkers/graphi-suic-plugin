@@ -14,7 +14,7 @@ public class ClearDeleteTask extends AbstractTask
     @Override
     public void initTaskDetails()
     {
-        name    =   "Reset Suicide Simulation";
+        setTaskName("Reset Suicide Simulation");
     }
 
     @Override

@@ -14,19 +14,19 @@ public class DiffKillTask extends AbstractTask
     @Override
     public void initTaskDetails()
     {
-        name    =   "Killing simulation (Random/Accumulated-Drop)";
+        setTaskName("Killing simulation (Random/Accumulated-Drop)");
     }
 
     @Override
     public void initDefaultProperties() 
     {
-        properties.put("Use Accumulated-Drop", "true");
+        setProperty("Use Accumulated-Drop", "true");
     }
 
     @Override
     public void performTask() 
     {
-        boolean useAccumDrop    =   properties.get("Use Accumulated-Drop").equalsIgnoreCase("true");
+        boolean useAccumDrop    =   getProperty("Use Accumulated-Drop").equalsIgnoreCase("true");
         SuicideControlPanel.getSuicidePanelInstance().getSimPanel().excecuteKillingDifussion(!useAccumDrop);
     }
 }

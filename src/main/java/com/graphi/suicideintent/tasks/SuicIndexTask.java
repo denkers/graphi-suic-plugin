@@ -14,7 +14,7 @@ public class SuicIndexTask extends AbstractTask
     @Override
     public void initTaskDetails() 
     {
-        name    =   "Suicide Index Computation";
+        setTaskName("Suicide Index Computation");
     }
 
     @Override
