@@ -1,4 +1,4 @@
-<img src="data/GraphiPluginLogo.png" align="left" />
+<img src="preview/Logo.png" align="left" />
 
 # graphi-suic Plugin
 
